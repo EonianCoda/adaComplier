@@ -19,12 +19,14 @@
 
 
 %%
-program:        identifier semi
-                {
-                    Trace("Reducing to program\n");
+program:        PROGRAM ID programbody END ID
+                { 
+                     Trace("Reducing to program\n");
                 }
                 ;
+programbody:    D
 
+declar
 semi:           SEMICOLON
                 {
                     Trace("Reducing to semi\n");

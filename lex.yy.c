@@ -565,15 +565,14 @@ char *yytext;
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "structure.h"
+#include "util.h"
 #include "y.tab.h"
-
 #define LIST				strcat(buf,yytext)
 #define ADD_STRING(s)		strcat(stringTmp,s)
-#define token(t) 			{LIST; return (t);}
-#define symbolToken(t)      {LIST; printf("<token:'%c'>\n", t); return (t);}
-#define tokenInteger(i) 	{LIST; printf("<integer:%d>\n",i); yylval.literal.type = Type_INT; yylval.literal.integer = i; return (LIT_INT);}
-#define tokenReal(r)        {LIST; printf("<real:%e>\n",r);  yylval.literal.type = Type_REAL; yylval.literal.real = r; return (LIT_REAL);}
+#define token(t) 			{LIST; if (DEBUG_FLAG) printf("<token: %s>\n", t);}
+#define symbolToken(t)      {LIST; if (DEBUG_FLAG) printf("<Symbol:'%c'>\n", t); return (t);}
+#define tokenInteger(i) 	{LIST; if (DEBUG_FLAG) printf("<integer:%d>\n",i); yylval.literal.type = Type_INT; yylval.literal.integer = i; return (LIT_INT);}
+#define tokenReal(r)        {LIST; if (DEBUG_FLAG) printf("<real:%e>\n",r);  yylval.literal.type = Type_REAL; yylval.literal.real = r; return (LIT_REAL);}
 
 #define MAX_LINE_LENG 256
 
@@ -581,9 +580,9 @@ int linenum = 1;
 char buf[MAX_LINE_LENG];
 char stringTmp[MAX_LINE_LENG];
 
-#line 584 "lex.yy.c"
+#line 583 "lex.yy.c"
 
-#line 586 "lex.yy.c"
+#line 585 "lex.yy.c"
 
 #define INITIAL 0
 #define blockComment 1
@@ -803,9 +802,9 @@ YY_DECL
 		}
 
 	{
-#line 27 "tokens.l"
+#line 26 "tokens.l"
 
-#line 808 "lex.yy.c"
+#line 807 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -864,18 +863,18 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 28 "tokens.l"
+#line 27 "tokens.l"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 29 "tokens.l"
+#line 28 "tokens.l"
 {LIST;}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 31 "tokens.l"
+#line 30 "tokens.l"
 {
                             LIST;
                             printf("%d: %s", linenum++, buf);
@@ -884,7 +883,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 37 "tokens.l"
+#line 36 "tokens.l"
 {
                             LIST;
                             BEGIN inlineComment;
@@ -892,13 +891,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 41 "tokens.l"
+#line 40 "tokens.l"
 {LIST;}
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 43 "tokens.l"
+#line 42 "tokens.l"
 {
                             LIST;
                             printf("%d: %s", linenum++, buf);
@@ -908,7 +907,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 50 "tokens.l"
+#line 49 "tokens.l"
 {
                             LIST;
                             BEGIN blockComment;
@@ -916,13 +915,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 55 "tokens.l"
+#line 54 "tokens.l"
 {LIST;}
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 57 "tokens.l"
+#line 56 "tokens.l"
 {
                             LIST;
                             printf("%d: %s", linenum++, buf);
@@ -931,7 +930,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 63 "tokens.l"
+#line 62 "tokens.l"
 {
                             LIST;
                             BEGIN INITIAL;
@@ -939,7 +938,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 68 "tokens.l"
+#line 67 "tokens.l"
 {
                             LIST;
                             BEGIN isString;
@@ -947,7 +946,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 73 "tokens.l"
+#line 72 "tokens.l"
 {
                             LIST;
                             ADD_STRING("\"");
@@ -955,7 +954,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 78 "tokens.l"
+#line 77 "tokens.l"
 {
                             LIST;
                             ADD_STRING(yytext);
@@ -964,7 +963,7 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 83 "tokens.l"
+#line 82 "tokens.l"
 {
                             LIST;
                             printf("%d:%s\n", linenum+1, buf);
@@ -974,13 +973,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 90 "tokens.l"
+#line 89 "tokens.l"
 {
                             LIST;
                             printf("<String:%s>\n",stringTmp);
                             int n = strlen(stringTmp);
                             char *tmp = malloc(n + 1);
                             strncpy(tmp, stringTmp, n);
+                            tmp[n] = '\0';
                             yylval.literal.type = Type_STR;
                             yylval.literal.str = tmp;
                             stringTmp[0] = '\0';
@@ -1096,179 +1096,281 @@ YY_RULE_SETUP
 case 37:
 YY_RULE_SETUP
 #line 127 "tokens.l"
-{LIST; printf("<token:ASSIGN>\n"); return ASSIGN;}
+{
+                        LIST;
+                        token("ASSIGN")
+                        return ASSIGN;
+                    }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 130 "tokens.l"
-{token("BEGIN");}
+#line 134 "tokens.l"
+{
+                                            token("BEGIN");
+                                            return "BEGIN";
+                                        }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 131 "tokens.l"
-{token(BOOLEAN);}
+#line 138 "tokens.l"
+{
+                                            token("BOOLEAN");
+                                            return BOOLEAN;
+                                        }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 132 "tokens.l"
-{token(BREAK);}
+#line 142 "tokens.l"
+{
+                                            token("BREAK");
+                                            return BREAK;
+                                        }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 133 "tokens.l"
-{token(CHARACTER);}
+#line 146 "tokens.l"
+{
+                                            token("CHARACTER");
+                                            return CHARACTER;
+                                        }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 134 "tokens.l"
-{token(CASE);}
+#line 150 "tokens.l"
+{
+                                            token("CASE");
+                                            return CASE;
+                                        }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 135 "tokens.l"
-{token(CONTINUE);}
+#line 154 "tokens.l"
+{
+                                            token("CONTINUE");
+                                            return CONTINUE;
+                                        }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 136 "tokens.l"
-{token(CONSTANT);}
+#line 158 "tokens.l"
+{
+                                            token("CONSTANT");
+                                            return CONSTANT;
+                                        }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 137 "tokens.l"
-{token(DECLARE);}
+#line 162 "tokens.l"
+{
+                                            token("DECLARE");
+                                            return DECLARE;
+                                        }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 138 "tokens.l"
-{token(DO);}
+#line 166 "tokens.l"
+{
+                                            token("DO");
+                                            return DO;
+                                        }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 139 "tokens.l"
-{token(ELSE);}
+#line 170 "tokens.l"
+{
+                                            token("ELSE");
+                                            return ELSE;
+                                        }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 140 "tokens.l"
-{token(END);}
+#line 174 "tokens.l"
+{
+                                            token("END");
+                                            return END;
+                                        }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 141 "tokens.l"
-{token(EXIT);}
+#line 178 "tokens.l"
+{
+                                            token("EXIT");
+                                            return EXIT;
+                                        }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 142 "tokens.l"
-{token(FLOAT);}
+#line 182 "tokens.l"
+{
+                                            token("FLOAT");
+                                            return FLOAT;
+                                        }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 143 "tokens.l"
-{token(FOR);}
+#line 186 "tokens.l"
+{
+                                            token("FOR");
+                                            return FOR;
+                                        }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 144 "tokens.l"
-{token(IF);}
+#line 190 "tokens.l"
+{
+                                            token("IF");
+                                            return IF;
+                                        }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 145 "tokens.l"
-{token(IN);}
+#line 194 "tokens.l"
+{
+                                            token("IN");
+                                            return IN;
+                                        }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 146 "tokens.l"
-{token(INTEGER);}
+#line 198 "tokens.l"
+{
+                                            token("INTEGER");
+                                            return INTEGER;
+                                        }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 147 "tokens.l"
-{token(LOOP);}
+#line 202 "tokens.l"
+{
+                                            token("LOOP");
+                                            return LOOP;
+                                        }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 148 "tokens.l"
-{token(PRINT);}
+#line 206 "tokens.l"
+{
+                                            token("PRINT");
+                                            return PRINT;
+                                        }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 149 "tokens.l"
-{token(PRINTLN);}
+#line 210 "tokens.l"
+{
+                                            token("PRINTLN");
+                                            return PRINTLN;
+                                        }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 150 "tokens.l"
-{token(PROCEDURE);}
+#line 214 "tokens.l"
+{
+                                            token("PROCEDURE");
+                                            return PROCEDURE;
+                                        }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 151 "tokens.l"
-{token(PROGRAM);}
+#line 218 "tokens.l"
+{
+                                            token("PROGRAM");
+                                            return PROGRAM;
+                                        }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 152 "tokens.l"
-{token(RETURN);}
+#line 222 "tokens.l"
+{
+                                            token("RETURN");
+                                            return RETURN;
+                                        }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 153 "tokens.l"
-{token(STRING);}
+#line 226 "tokens.l"
+{
+                                            token("STRING");
+                                            return STRING;
+                                        }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 154 "tokens.l"
-{token(THEN);}
+#line 230 "tokens.l"
+{
+                                            token("THEN");
+                                            return THEN;
+                                        }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 155 "tokens.l"
-{token(WHILE);}
+#line 234 "tokens.l"
+{
+                                            token("WHILE");
+                                            return WHILE;
+                                        }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 158 "tokens.l"
-{token(BOOL_TRUE);}
+#line 239 "tokens.l"
+{
+                                            token("BOOL_TRUE");
+                                            return BOOL_TRUE;
+                                        }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 159 "tokens.l"
-{token(BOOL_FALSE);}
+#line 243 "tokens.l"
+{
+                                            token("BOOL_FALSE");
+                                            return BOOL_FALSE;
+                                        }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 160 "tokens.l"
-{token(AND);}
+#line 247 "tokens.l"
+{
+                                            token("AND");
+                                            return AND;
+                                        }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 161 "tokens.l"
-{token(NOT);}
+#line 251 "tokens.l"
+{
+                                            token("NOT");
+                                            return NOT;
+                                        }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 162 "tokens.l"
-{token(OR);}
+#line 255 "tokens.l"
+{
+                                            token("OR");
+                                            return OR;
+                                        }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 164 "tokens.l"
+#line 260 "tokens.l"
 {	
                             LIST;
-                            printf("<ID:%s>\n", yytext);
+                            if (DEBUG_FLAG)
+                            {
+                                printf("<ID:%s>\n", yytext);
+                            }
+                            
                             size_t n = yyleng;
                             char *nstr = malloc(n + 1);
-                            strncpy(nstr, yytext, n);   
+                            strncpy(nstr, yytext, n);
+                            nstr[n] = '\0'; 
                             yylval.name = nstr;
                             return ID;
                         }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 174 "tokens.l"
+#line 275 "tokens.l"
 {
                         LIST;
                         printf("%d:%s\n", linenum+1, buf);
@@ -1278,10 +1380,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 180 "tokens.l"
+#line 281 "tokens.l"
 ECHO;
 	YY_BREAK
-#line 1284 "lex.yy.c"
+#line 1386 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(blockComment):
 case YY_STATE_EOF(inlineComment):
@@ -2289,4 +2391,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 180 "tokens.l"
+#line 281 "tokens.l"

@@ -1,4 +1,5 @@
 program test
 declare
-a : constant : float:=-12.25;
+a,b,c : integer[10];
+procedure add end add;
 end test

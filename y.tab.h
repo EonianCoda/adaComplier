@@ -130,14 +130,15 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 12 "parser.y" /* yacc.c:1909  */
+#line 10 "parser.y" /* yacc.c:1909  */
 
+    bool flag;
     enum TypeEnum typeEnum;
     char *name;
     struct Constant literal;
-    struct Type *type;
+    struct Type type; 
 
-#line 141 "y.tab.h" /* yacc.c:1909  */
+#line 142 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

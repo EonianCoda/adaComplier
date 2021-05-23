@@ -1,5 +1,5 @@
 ALL = parser
-OBJS = lex.yy.o y.tab.o structure.o
+OBJS = lex.yy.o y.tab.o util.o symtable.o
 LIBS = -lfl
 CC = cc
 YACC = yacc
@@ -14,10 +14,12 @@ y.tab.c y.tab.h: parser.y
 lex.yy.c: tokens.l
 	$(LEX) $^
 
-lex.yy.o: lex.yy.c y.tab.h structure.h
-y.tab.o: y.tab.c structure.h 
+lex.yy.o: lex.yy.c y.tab.h util.h
+y.tab.o: y.tab.c symtable.h util.h
 
-structure.o: structure.c structure.h
+symtable.o: symtable.c symtable.h util.h
+util.o: util.c util.h
+
 
 .PHONY: clean
 clean:

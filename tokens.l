@@ -8,6 +8,7 @@
 #define LIST				strcat(buf,yytext)
 #define ADD_STRING(s)		strcat(stringTmp,s)
 #define token(t) 			{LIST; return (t);}
+#define symbolToken(t)      {LIST; printf("<token:'%c'>\n", t); return (t);}
 #define tokenInteger(i) 	{LIST; printf("<integer:%d>\n",i); yylval.literal.type = Type_INT; yylval.literal.integer = i; return (LIT_INT);}
 #define tokenReal(r)        {LIST; printf("<real:%e>\n",r);  yylval.literal.type = Type_REAL; yylval.literal.real = r; return (LIT_REAL);}
 
@@ -103,27 +104,27 @@ char stringTmp[MAX_LINE_LENG];
 
 [+-]?[0-9]+\.[0-9]+([eE][-+]?[0-9]+)?	{tokenReal(atof(yytext));}
 
-","					{token(',');}
-":"					{token(':');}
-"."					{token('.');}
-";"					{token(';');}
-"("  				{token('(');}
-")"					{token(')');}
-"["					{token('[');}
-"]"					{token(']');}
-"+"					{token('+');}
-"-"					{token('-');}
-"*"					{token('*');}
-"/"					{token('/');}
-"%"					{token('%');}
-"<"					{token('<');}
-">"					{token('>');}
-"="					{token('=');}
+","					{symbolToken(',');}
+":"					{symbolToken(':');}
+"."					{symbolToken('.');}
+";"					{symbolToken(';');}
+"("  				{symbolToken('(');}
+")"					{symbolToken(')');}
+"["					{symbolToken('[');}
+"]"					{symbolToken(']');}
+"+"					{symbolToken('+');}
+"-"					{symbolToken('-');}
+"*"					{symbolToken('*');}
+"/"					{symbolToken('/');}
+"%"					{symbolToken('%');}
+"<"					{symbolToken('<');}
+">"					{symbolToken('>');}
+"="					{symbolToken('=');}
 
 "<="				{token("<=");}
 ">="				{token(">=");}
 "/="				{token("/=");}
-":="				{token(":=");}
+":="				{LIST; printf("<token:ASSIGN>\n"); return ASSIGN;}
 
 
 [bB][eE][gG][iI][nN]					{token("BEGIN");}
@@ -161,6 +162,8 @@ char stringTmp[MAX_LINE_LENG];
 [oO][rR]								{token(OR);}
 
 [a-zA-Z][a-zA-Z0-9_]*   {	
+                            LIST;
+                            printf("<ID:%s>\n", yytext);
                             size_t n = yyleng;
                             char *nstr = malloc(n + 1);
                             strncpy(nstr, yytext, n);   

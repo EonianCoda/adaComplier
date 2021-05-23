@@ -1,5 +1,6 @@
 %{
-#define Trace(t)        printf(t)
+#define DEBUG_FLAG (true)
+#define Trace(t)  { if(DEBUG_FLAG) printf(t); }
 #include "structure.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +32,9 @@ extern FILE *yyin;
 //Other keywords
 %token  OF  READ  CHARACTER EXIT CASE IN
 
+//operation
+%token ASSIGN
+
 %token <name> ID
 
 // literals
@@ -53,24 +57,25 @@ program:        PROGRAM ID programbody END ID
 /***********************************************/
 /*TODO pushScope() implement in symtable.h/.c  */
 /***********************************************/
-programbody:    programDeclars
-                ;
+programbody: 
+            | DECLARE programDeclars { Trace("Reducing to DECLAREBODY\n");}
+             ;
 
 programDeclars:
-          /*Empty*/
          | programDeclars varDeclar
          | programDeclars constVarDeclar
          ;
 
 varDeclar:
-         ID ":" type ";"
-         | ID ":=" literalConstant ";" { }
-         | ID ":" type ":=" literalConstant ";" {}
+         ID ':' type ';' { Trace("declare var by type\n");}
+         | ID  ASSIGN  literalConstant ';'  { Trace("declare var by value\n");}
+         | ID ':' type ASSIGN literalConstant ';' { Trace("declare var by both type and value\n");}
          ;
  
 constVarDeclar:
-         ID ":" CONSTANT ":=" literalConstant ";"
-         | ID ":" CONSTANT ":" type ";"
+         ID ':' CONSTANT ASSIGN literalConstant ';' { Trace("declare const var by value\n");}
+         | ID ':' CONSTANT ':' type ';' { Trace("declare const var by type\n");}
+         | ID ':' CONSTANT ':' type ASSIGN literalConstant ';' { Trace("declare const var by both type and value\n");}
          ;
 
 type :
@@ -87,7 +92,7 @@ scalar_type :
              | STRING  { $$ = Type_STR;}
              ;
 literalConstant:
-         LIT_INT
+         LIT_INT { Trace("literal_integer \n");}
          | LIT_STR
          | LIT_REAL
          | BOOL_TRUE { $$.type = Type_BOOL; $$.boolean = true; }
@@ -120,7 +125,7 @@ main(int argc, char *argv[])
         printf ("Usage: sc filename\n");
         exit(1);
     }
-    printf("%s",argv[1]);
+
     yyin = fopen(argv[1], "r");         /* open input file */
     if(yyin)
     {

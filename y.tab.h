@@ -77,11 +77,12 @@ extern int yydebug;
     EXIT = 287,
     CASE = 288,
     IN = 289,
-    ID = 290,
-    LIT_INT = 291,
-    LIT_STR = 292,
-    LIT_REAL = 293,
-    SEMICOLON = 294
+    ASSIGN = 290,
+    ID = 291,
+    LIT_INT = 292,
+    LIT_STR = 293,
+    LIT_REAL = 294,
+    SEMICOLON = 295
   };
 #endif
 /* Tokens.  */
@@ -117,25 +118,26 @@ extern int yydebug;
 #define EXIT 287
 #define CASE 288
 #define IN 289
-#define ID 290
-#define LIT_INT 291
-#define LIT_STR 292
-#define LIT_REAL 293
-#define SEMICOLON 294
+#define ASSIGN 290
+#define ID 291
+#define LIT_INT 292
+#define LIT_STR 293
+#define LIT_REAL 294
+#define SEMICOLON 295
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 11 "parser.y" /* yacc.c:1909  */
+#line 12 "parser.y" /* yacc.c:1909  */
 
     enum TypeEnum typeEnum;
     char *name;
     struct Constant literal;
     struct Type *type;
 
-#line 139 "y.tab.h" /* yacc.c:1909  */
+#line 141 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

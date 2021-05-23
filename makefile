@@ -1,12 +1,25 @@
-scanner: lex.yy.o symbols.o
-	gcc -o p lex.yy.o symbols.o -ll
+ALL = parser
+OBJS = lex.yy.o y.tab.o structure.o
+LIBS = -lfl
+CC = cc
+YACC = yacc
+LEX = flex
 
-lex.yy.o: scanner.l
-	lex scanner.l
-	gcc -c -g lex.yy.c
+all: $(ALL)
+parser: $(OBJS)
+	$(CC) $^ $(LIBS) -o parser
 
-symbols.o: symbols.c symbols.h
-	gcc -c -g symbols.c
+y.tab.c y.tab.h: parser.y
+	$(YACC) -d $^
+lex.yy.c: tokens.l
+	$(LEX) $^
 
+lex.yy.o: lex.yy.c y.tab.h structure.h
+y.tab.o: y.tab.c structure.h 
+
+structure.o: structure.c structure.h
+
+.PHONY: clean
 clean:
-	rm -f *.o lex.yy.c
+	-rm $(OBJS) $(ALL)
+	-rm y.tab.c y.tab.h lex.yy.c

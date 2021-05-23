@@ -1,5 +1,13 @@
 program test
-declare
-a,b,c : integer[10];
-procedure add end add;
+    declare 
+        a: integer;
+    procedure add(a : integer;) return integer
+    declare 
+        b: integer :=12.3;
+        begin
+        end
+    end add;
+    begin
+
+    end
 end test

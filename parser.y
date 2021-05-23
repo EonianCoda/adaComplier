@@ -14,7 +14,7 @@ extern FILE *yyin;
     struct Constant literal;
     struct Type type; 
 }
-
+%token BEGIN_
 // Type keywords
 %token BOOLEAN INTEGER FLOAT STRING CONSTANT
 // Bool keywords
@@ -27,6 +27,7 @@ extern FILE *yyin;
 %token PROGRAM PROCEDURE END DECLARE RETURN
 // Logical Operation
 %token OR NOT AND
+
 
 //Other keywords
 %token  OF  READ  CHARACTER EXIT CASE IN
@@ -58,63 +59,84 @@ program:        PROGRAM ID
                     Trace("Reducing to program\n");
                 }
                 ;
-/***********************************************/
-/*TODO pushScope() implement in symtable.h/.c  */
-/***********************************************/
+
 programbody: 
-            | DECLARE programDeclars                 
+            | declarations 
                 { 
-                    Trace("End program variable declaration!\n");
+                    Trace("Reducing to declarations \n");
                 }
-            procedureDecls
+            procedureDeclars
                 { 
-                    nextScope();
-                    Trace("Procedure Declaration\n");
+                    Trace("Reducing to procedureDeclars \n");
                 }
+            compound_stmt
                 { 
-                    Trace("Reducing to DECLAREBODY\n");
+                    Trace("Reducing to BLOCK\n");
+                    Trace("Reducing to programbody\n");
                 }
-             ;
+            
+            ;
 
 /***************************************************/
 /********************Procedure**********************/
 /***************************************************/
-procedureDecls :
-        /* empty */ { Trace("Empty procedure Declaration\n"); }
-        | procedureDeclar
-        | procedureDecls procedureDeclar
+procedureDeclars :
+        /* empty */ { Trace("No procedure!\n"); }
+        | procedureDeclar 
+        | procedureDeclars procedureDeclar
         ;
+
 procedureDeclar:
-        PROCEDURE ID parameters procedureReturn END ID ';'
+        PROCEDURE ID 
         {
             addVar($2, SymbolKind_procedure);
-            assign_type($4, false);
+            nextScope();
+        }
+        paraDeclars procedureReturn
+        {
+            assign_type($5, false);
             clear_stack();
         }
+        declarations compound_stmt END ID ';'
+        { 
+            Trace("End this procedure declaration!\n");
+            prevScope();
+        }
         ;
+compound_stmt:
+        BEGIN_  END
+        ;
+
 
 procedureReturn:
-        /* Empty */ {$$ = Type_VOID;}
+        /* Empty */ {Trace("Return Type= Void!\n"); $$ = Type_VOID;}
         | RETURN type {$$ = $2.type;}
         ;
-parameters:
-        /* Empty */
-        | '(' parameterDecalrs ')'
+paraDeclars:
+        /* Empty */ { Trace("No parameters!\n"); }
+        | '(' paraDeclar ')'
         ;
 
-parameterDecalrs:
+paraDeclar:
         varDeclar
-        | parameterDecalrs varDeclar
+        | paraDeclar varDeclar
         ;
+
+
+
 /***************************************************/
 /*******************Declaration*********************/
 /***************************************************/
-programDeclars:
-        /* Empty */
-        | programDeclars varDeclar { }
-        | programDeclars constVarDeclar { }
-        ;
 
+declarations:
+        /* Empty */  { Trace("No declarations!\n"); }
+        | DECLARE declaration
+        ;
+declaration:
+        /* Empty */
+        | declaration varDeclar { }
+        | declaration constVarDeclar { }
+        ;
 
 varDeclar:
         identifier_list ':' type ';' 
@@ -195,11 +217,6 @@ literalConstant:
         | BOOL_TRUE { $$.type = Type_BOOL; $$.boolean = true; }
         | BOOL_FALSE { $$.type = Type_BOOL; $$.boolean = false; }
         ;
-semi:           SEMICOLON
-                {
-                    Trace("Reducing to semi\n");
-                }
-                ;
 %%
 
 

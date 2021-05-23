@@ -133,7 +133,7 @@ char stringTmp[MAX_LINE_LENG];
 
 [bB][eE][gG][iI][nN]					{
                                             token("BEGIN");
-                                            return "BEGIN";
+                                            return BEGIN_;
                                         }
 [bB][oO][oO][lL][eE][aA][nN]			{
                                             token("BOOLEAN");

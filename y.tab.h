@@ -45,85 +45,87 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    BOOLEAN = 258,
-    INTEGER = 259,
-    FLOAT = 260,
-    STRING = 261,
-    CONSTANT = 262,
-    BOOL_TRUE = 263,
-    BOOL_FALSE = 264,
-    IF = 265,
-    ELSE = 266,
-    DO = 267,
-    THEN = 268,
-    WHILE = 269,
-    BREAK = 270,
-    CONTINUE = 271,
-    FOR = 272,
-    LOOP = 273,
-    PRINT = 274,
-    PRINTLN = 275,
-    PROGRAM = 276,
-    PROCEDURE = 277,
-    END = 278,
-    DECLARE = 279,
-    RETURN = 280,
-    OR = 281,
-    NOT = 282,
-    AND = 283,
-    OF = 284,
-    READ = 285,
-    CHARACTER = 286,
-    EXIT = 287,
-    CASE = 288,
-    IN = 289,
-    ASSIGN = 290,
-    ID = 291,
-    LIT_INT = 292,
-    LIT_STR = 293,
-    LIT_REAL = 294,
-    SEMICOLON = 295
+    BEGIN_ = 258,
+    BOOLEAN = 259,
+    INTEGER = 260,
+    FLOAT = 261,
+    STRING = 262,
+    CONSTANT = 263,
+    BOOL_TRUE = 264,
+    BOOL_FALSE = 265,
+    IF = 266,
+    ELSE = 267,
+    DO = 268,
+    THEN = 269,
+    WHILE = 270,
+    BREAK = 271,
+    CONTINUE = 272,
+    FOR = 273,
+    LOOP = 274,
+    PRINT = 275,
+    PRINTLN = 276,
+    PROGRAM = 277,
+    PROCEDURE = 278,
+    END = 279,
+    DECLARE = 280,
+    RETURN = 281,
+    OR = 282,
+    NOT = 283,
+    AND = 284,
+    OF = 285,
+    READ = 286,
+    CHARACTER = 287,
+    EXIT = 288,
+    CASE = 289,
+    IN = 290,
+    ASSIGN = 291,
+    ID = 292,
+    LIT_INT = 293,
+    LIT_STR = 294,
+    LIT_REAL = 295,
+    SEMICOLON = 296
   };
 #endif
 /* Tokens.  */
-#define BOOLEAN 258
-#define INTEGER 259
-#define FLOAT 260
-#define STRING 261
-#define CONSTANT 262
-#define BOOL_TRUE 263
-#define BOOL_FALSE 264
-#define IF 265
-#define ELSE 266
-#define DO 267
-#define THEN 268
-#define WHILE 269
-#define BREAK 270
-#define CONTINUE 271
-#define FOR 272
-#define LOOP 273
-#define PRINT 274
-#define PRINTLN 275
-#define PROGRAM 276
-#define PROCEDURE 277
-#define END 278
-#define DECLARE 279
-#define RETURN 280
-#define OR 281
-#define NOT 282
-#define AND 283
-#define OF 284
-#define READ 285
-#define CHARACTER 286
-#define EXIT 287
-#define CASE 288
-#define IN 289
-#define ASSIGN 290
-#define ID 291
-#define LIT_INT 292
-#define LIT_STR 293
-#define LIT_REAL 294
-#define SEMICOLON 295
+#define BEGIN_ 258
+#define BOOLEAN 259
+#define INTEGER 260
+#define FLOAT 261
+#define STRING 262
+#define CONSTANT 263
+#define BOOL_TRUE 264
+#define BOOL_FALSE 265
+#define IF 266
+#define ELSE 267
+#define DO 268
+#define THEN 269
+#define WHILE 270
+#define BREAK 271
+#define CONTINUE 272
+#define FOR 273
+#define LOOP 274
+#define PRINT 275
+#define PRINTLN 276
+#define PROGRAM 277
+#define PROCEDURE 278
+#define END 279
+#define DECLARE 280
+#define RETURN 281
+#define OR 282
+#define NOT 283
+#define AND 284
+#define OF 285
+#define READ 286
+#define CHARACTER 287
+#define EXIT 288
+#define CASE 289
+#define IN 290
+#define ASSIGN 291
+#define ID 292
+#define LIT_INT 293
+#define LIT_STR 294
+#define LIT_REAL 295
+#define SEMICOLON 296
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -138,7 +140,7 @@ union YYSTYPE
     struct Constant literal;
     struct Type type; 
 
-#line 142 "y.tab.h" /* yacc.c:1909  */
+#line 144 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

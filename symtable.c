@@ -63,6 +63,10 @@ void nextScope()
 {
     curScopeLevel ++;
 }
+void prevScope()
+{
+    curScopeLevel --;
+}
 int hash(char *name)
 {
     unsigned long hash = 5381;
@@ -106,17 +110,20 @@ void PrintSymbolTable()
     static char *typeKind[] = {"Program","Procedure", "Parameter", "Variable", "Constant", "LoopVar"};
     for(int i = 0, t; i< SYMTABSIZE;i++)
     {
-        if(symbolTable[i])
+        struct SymTableEntry *cur = symbolTable[i];
+        while(cur)
         {
-            printf("Name: %5s,", symbolTable[i]->name);
-            if(symbolTable[i]->kind == SymbolKind_program || symbolTable[i]->kind == SymbolKind_procedure)
+            printf("Name: %5s,", cur->name);
+            if(cur->kind == SymbolKind_program)
             {
-                printf("Type: %8s,", "None");
+                printf(" Type: %8s,", "None");
             }
             else{
-                printf("Type: %8s,", typeName[symbolTable[i]->type.type]);
+                printf(" Type: %8s,", typeName[cur->type.type]);
             }
-            printf("Kind: %9s ,Level: %2d\n", typeKind[symbolTable[i]->kind], symbolTable[i]->level);
+            
+            printf(" Kind: %9s, Level: %2d\n", typeKind[cur->kind],cur->level);
+            cur = cur->NEXT;
         }
     }
 }

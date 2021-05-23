@@ -1107,7 +1107,7 @@ YY_RULE_SETUP
 #line 134 "tokens.l"
 {
                                             token("BEGIN");
-                                            return "BEGIN";
+                                            return BEGIN_;
                                         }
 	YY_BREAK
 case 39:

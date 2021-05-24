@@ -46,101 +46,113 @@ extern int yydebug;
   enum yytokentype
   {
     BEGIN_ = 258,
-    BOOLEAN = 259,
-    INTEGER = 260,
-    FLOAT = 261,
-    STRING = 262,
-    CONSTANT = 263,
-    BOOL_TRUE = 264,
-    BOOL_FALSE = 265,
-    IF = 266,
-    ELSE = 267,
-    DO = 268,
-    THEN = 269,
-    WHILE = 270,
-    BREAK = 271,
-    CONTINUE = 272,
-    FOR = 273,
-    LOOP = 274,
-    PRINT = 275,
-    PRINTLN = 276,
+    PRINT = 259,
+    PRINTLN = 260,
+    BOOLEAN = 261,
+    INTEGER = 262,
+    FLOAT = 263,
+    STRING = 264,
+    CONSTANT = 265,
+    BOOL_TRUE = 266,
+    BOOL_FALSE = 267,
+    IF = 268,
+    ELSE = 269,
+    DO = 270,
+    THEN = 271,
+    WHILE = 272,
+    BREAK = 273,
+    CONTINUE = 274,
+    FOR = 275,
+    LOOP = 276,
     PROGRAM = 277,
     PROCEDURE = 278,
     END = 279,
     DECLARE = 280,
     RETURN = 281,
-    OR = 282,
-    NOT = 283,
-    AND = 284,
-    OF = 285,
-    READ = 286,
-    CHARACTER = 287,
-    EXIT = 288,
-    CASE = 289,
-    IN = 290,
-    ASSIGN = 291,
-    ID = 292,
-    LIT_INT = 293,
-    LIT_STR = 294,
-    LIT_REAL = 295,
-    SEMICOLON = 296
+    OF = 282,
+    READ = 283,
+    CHARACTER = 284,
+    EXIT = 285,
+    CASE = 286,
+    IN = 287,
+    ASSIGN = 288,
+    OR = 289,
+    AND = 290,
+    NOT = 291,
+    LEEQ = 292,
+    NOTEQ = 293,
+    GREQ = 294,
+    DIVEQ = 295,
+    LOWER_THEN_INDEX = 296,
+    ID = 297,
+    LIT_INT = 298,
+    LIT_STR = 299,
+    LIT_REAL = 300,
+    SEMICOLON = 301
   };
 #endif
 /* Tokens.  */
 #define BEGIN_ 258
-#define BOOLEAN 259
-#define INTEGER 260
-#define FLOAT 261
-#define STRING 262
-#define CONSTANT 263
-#define BOOL_TRUE 264
-#define BOOL_FALSE 265
-#define IF 266
-#define ELSE 267
-#define DO 268
-#define THEN 269
-#define WHILE 270
-#define BREAK 271
-#define CONTINUE 272
-#define FOR 273
-#define LOOP 274
-#define PRINT 275
-#define PRINTLN 276
+#define PRINT 259
+#define PRINTLN 260
+#define BOOLEAN 261
+#define INTEGER 262
+#define FLOAT 263
+#define STRING 264
+#define CONSTANT 265
+#define BOOL_TRUE 266
+#define BOOL_FALSE 267
+#define IF 268
+#define ELSE 269
+#define DO 270
+#define THEN 271
+#define WHILE 272
+#define BREAK 273
+#define CONTINUE 274
+#define FOR 275
+#define LOOP 276
 #define PROGRAM 277
 #define PROCEDURE 278
 #define END 279
 #define DECLARE 280
 #define RETURN 281
-#define OR 282
-#define NOT 283
-#define AND 284
-#define OF 285
-#define READ 286
-#define CHARACTER 287
-#define EXIT 288
-#define CASE 289
-#define IN 290
-#define ASSIGN 291
-#define ID 292
-#define LIT_INT 293
-#define LIT_STR 294
-#define LIT_REAL 295
-#define SEMICOLON 296
+#define OF 282
+#define READ 283
+#define CHARACTER 284
+#define EXIT 285
+#define CASE 286
+#define IN 287
+#define ASSIGN 288
+#define OR 289
+#define AND 290
+#define NOT 291
+#define LEEQ 292
+#define NOTEQ 293
+#define GREQ 294
+#define DIVEQ 295
+#define LOWER_THEN_INDEX 296
+#define ID 297
+#define LIT_INT 298
+#define LIT_STR 299
+#define LIT_REAL 300
+#define SEMICOLON 301
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 10 "parser.y" /* yacc.c:1909  */
+#line 16 "parser.y" /* yacc.c:1909  */
 
     bool flag;
     enum TypeEnum typeEnum;
+    enum Operator oper;
     char *name;
     struct Constant literal;
-    struct Type type; 
+    struct Type *type;
+    struct Expr *expr;
 
-#line 144 "y.tab.h" /* yacc.c:1909  */
+#line 156 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

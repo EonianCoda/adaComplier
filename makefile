@@ -1,11 +1,12 @@
 ALL = parser
-OBJS = lex.yy.o y.tab.o util.o symtable.o
+OBJS = lex.yy.o y.tab.o util.o symtable.o semcheck.o
 LIBS = -lfl
 CC = cc
 YACC = yacc
 LEX = flex
 
 all: $(ALL)
+
 parser: $(OBJS)
 	$(CC) $^ $(LIBS) -o parser
 
@@ -19,6 +20,7 @@ y.tab.o: y.tab.c symtable.h util.h
 
 symtable.o: symtable.c symtable.h util.h
 util.o: util.c util.h
+semcheck.o: semcheck.c semcheck.h symtable.h util.h 
 
 
 .PHONY: clean

@@ -100,9 +100,9 @@ char stringTmp[MAX_LINE_LENG];
                             return (LIT_STR);
                         }
 
-[-]?[0-9]+     {tokenInteger(atoi(yytext));}
+[0-9]+     {tokenInteger(atoi(yytext));}
 
-[+-]?[0-9]+\.[0-9]+([eE][-+]?[0-9]+)?	{tokenReal(atof(yytext));}
+[0-9]+\.[0-9]+([eE][-+]?[0-9]+)?	{tokenReal(atof(yytext));}
 
 ","					{symbolToken(',');}
 ":"					{symbolToken(':');}
@@ -121,9 +121,27 @@ char stringTmp[MAX_LINE_LENG];
 ">"					{symbolToken('>');}
 "="					{symbolToken('=');}
 
-"<="				{token("<=");}
-">="				{token(">=");}
-"/="				{token("/=");}
+
+"!="				{
+                       LIST;
+                       token("NOTEQ")
+                       return NOTEQ;
+                    }
+"<="				{
+                       LIST;
+                       token("LEEQ")
+                       return LEEQ;
+                    }
+">="				{
+                       LIST;
+                       token("GREQ")
+                       return GREQ;
+                    }
+"/="				{
+                       LIST;
+                       token("DIVEQ")
+                       return DIVEQ;
+                    }
 ":="				{
                         LIST;
                         token("ASSIGN")

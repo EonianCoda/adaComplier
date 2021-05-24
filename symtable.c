@@ -4,10 +4,24 @@
 #include "symtable.h"
 #define  SYMTABSIZE 1000
 
-#define DEBUG_FLAG (false)
 struct SymTableEntry *symbolTable[SYMTABSIZE];
 struct SymbolStack *top;
 int curScopeLevel;
+
+
+/*************  for symbolEntry ******************/
+void destroy_SymbolEntry(struct SymTableEntry* entry)
+{
+    struct SymTableEntry *cur = entry;
+    while(cur)
+    {
+        if(cur->name != NULL) free(cur->name);
+        destroy_type(cur->type);
+        entry = cur;
+        cur = cur->NEXT;
+        free(entry);
+    }
+}
 
 /*************  for symbolstack ******************/
 void pop_symbol()
@@ -31,30 +45,27 @@ void clear_stack()
 {
     while(top) pop_symbol();
 }
-
-void assign_type(enum TypeEnum type, bool constant)
+//for use type keywords
+void assign_type(struct Type *type, bool constant)
 {
     if(top == NULL) return;
     do{
-        top->node->type.type = type;
+        top->node->type = copyType(type);
         top->node->constant = constant;
         pop_symbol();
     }while(top);
 }
-
-void assign_list_type(struct Type type)
+//for literal constant init
+void assign_type_byEnum(enum TypeEnum type, bool constant)
 {
-    int i = 0;
-
-    //TODO 當有複數個元素時，是否要觸發語意錯誤(因為不可以在array宣告同一行放兩個變數)
     if(top == NULL) return;
     do{
-        top->node->type.type = type.type;
-        top->node->type.itemType = type.itemType;
-        top->node->type.size = type.size;
+        top->node->type = malloc(sizeof(struct Type));
+        top->node->type->type = type;
+        top->node->type->itemType = NULL;
+        top->node->constant = constant;
         pop_symbol();
     }while(top);
-    
 }
 
 /*************  for symboltable ******************/
@@ -67,7 +78,7 @@ void prevScope()
 {
     curScopeLevel --;
 }
-int hash(char *name)
+int hash(const char *name)
 {
     unsigned long hash = 5381;
     int c;
@@ -80,6 +91,29 @@ int hash(char *name)
 
 
 
+int getSymbolPos(const char *name)
+{
+    int c1 = 2, c2= 3, i = 0;
+    bool flag = false;
+    int pos = hash(name);
+
+    while(symbolTable[pos] != NULL)
+    {
+        //if two identifier same name
+        if(!strcmp(symbolTable[pos]->name, name)) break;
+        //quadratic probing
+        pos = (pos + c1 * i + c2 * i * i) % SYMTABSIZE;
+        i++;
+    }
+    return pos;
+}
+
+struct SymTableEntry* getSymbol(const char *name)
+{
+    int pos = getSymbolPos(name);
+    if(symbolTable[pos] == NULL) return NULL;
+    else return symbolTable[pos];
+}
 
 // init symbol table
 void initSymbolTable()
@@ -89,14 +123,7 @@ void initSymbolTable()
     {
         if(symbolTable[i] != NULL)
         {
-            struct SymTableEntry *cur = symbolTable[i];
-            while(cur)
-            {
-                if(cur->name != NULL) free(cur->name);
-                tmp = cur;
-                cur = cur->NEXT;
-                free(tmp);
-            }
+            destroy_SymbolEntry(symbolTable[i]);
             symbolTable[i] = NULL;
         }
     }
@@ -114,14 +141,8 @@ void PrintSymbolTable()
         while(cur)
         {
             printf("Name: %5s,", cur->name);
-            if(cur->kind == SymbolKind_program)
-            {
-                printf(" Type: %8s,", "None");
-            }
-            else{
-                printf(" Type: %8s,", typeName[cur->type.type]);
-            }
-            
+            if(cur->kind == SymbolKind_program) printf(" Type: %8s,", "None");
+            else printf(" Type: %8s,", typeName[cur->type->type]);   
             printf(" Kind: %9s, Level: %2d\n", typeKind[cur->kind],cur->level);
             cur = cur->NEXT;
         }
@@ -132,33 +153,18 @@ void PrintSymbolTable()
 // Add new identifer
 void addVar(char *name, enum SymbolKind kind)
 {
-    
     struct SymTableEntry *newVar = malloc(sizeof(struct SymTableEntry));
-    
-    int c1 = 2, c2= 3, i = 0;
-    bool flag = false;
-    int pos = hash(name);
-
-    while(symbolTable[pos] != NULL)
-    {
-        //if two identifier same name
-        if(!strcmp(symbolTable[pos]->name, name))
-        {
-            flag = true;
-            break;
-        }
-        //quadratic probing
-        pos = (pos + c1 * i + c2 * i * i) % SYMTABSIZE;
-        i++;
-    }
     newVar->name = name;
     newVar->level = curScopeLevel;
     newVar->kind = kind;
+    newVar->type = NULL;
+    newVar->constant = false;
     newVar->PREV = NULL;
     newVar->NEXT = NULL;
+    int pos = getSymbolPos(name);
 
     //if two identifer have same name, then linked them
-    if(flag)
+    if(symbolTable[pos] != NULL)
     {
         newVar->NEXT = symbolTable[pos];
         symbolTable[pos]->PREV = newVar;

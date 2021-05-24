@@ -3,7 +3,7 @@ program test
         a: integer;
     procedure add(a : integer;) return integer
     declare 
-        b: integer :=12.3;
+        b: integer := 1 + 1;
         begin
         end
     end add;

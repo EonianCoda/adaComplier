@@ -60,12 +60,8 @@ extern int yylex(void);
 
 
 /* tokens */
-%token SEMICOLON
-
-
-
 %type<typeEnum> type_keyword procedureReturn
-%type<type> type 
+%type<type> type varAssignType
 %type<literal> literalConstant
 %type<oper> mul_op add_op rel_op
 %type<expr> variable_reference
@@ -118,9 +114,13 @@ procedureDeclar:
             addVar($2, SymbolKind_procedure);
             nextScope();
         }
-        paraDeclars procedureReturn
+        paraDeclars
         {
-            assign_type_byEnum($5, false);
+            Trace("End this procedure's parameter declaration!\n");
+        }
+        procedureReturn
+        {
+            assign_type_byEnum($6, false);
             clear_stack();
         }
         declarations compound_stmt END ID ';'
@@ -140,10 +140,13 @@ paraDeclars:
         ;
 
 paraDeclar:
-        varDeclar
-        | paraDeclar varDeclar
+        varAssignType { Trace("add new parameter\n"); }
+        | paraDeclar ';' varAssignType 
         ;
 
+/***************************************************/
+/********************statement**********************/
+/***************************************************/
 compound_stmt:
         BEGIN_ statements END
         ;
@@ -296,18 +299,19 @@ declaration:
         | declaration constVarDeclar { }
         ;
 
+
 varDeclar:
-        identifier_list ':' type ';' 
+        varAssignType ';' 
         { 
-            assign_type($3, false);
-            destroy_type($3);
+            destroy_type($1);
+            Trace("Reducing to varDeclar\n");
         }
         | identifier_list  ASSIGN  literalConstant ';'  
         { 
             /****This rule occur error in real ada****/
             assign_type_byEnum($3.type, false);
         }
-        | identifier_list ':' type ASSIGN boolean_expr ';' 
+        | varAssignType ASSIGN boolean_expr ';' 
         {
             Trace("Test for boolean expression\n");
             // if($3->type != $5.type) semanticError("init error(left-side and right-side have different type)");
@@ -315,7 +319,16 @@ varDeclar:
             // destroy_type($3);
         }
         ;
- 
+
+varAssignType:
+        identifier_list ':' type
+        {
+            assign_type($3, false);
+            $$ = $3;
+            Trace("Reducing to varAssignType\n");
+        }
+        ;
+
 constVarDeclar:
         identifier_list  ':' CONSTANT ASSIGN literalConstant ';' 
         { 

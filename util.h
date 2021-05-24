@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define DEBUG_FLAG (true)
-#define ENABLE_BEFORE_LINENUMBER (true)
+#define ENABLE_BEFORE_LINENUMBER (false)
 #define DEBUG_BEFORE_LINENUMBER (6)
 
 extern char *OpName[];

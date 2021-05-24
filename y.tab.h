@@ -87,8 +87,7 @@ extern int yydebug;
     ID = 297,
     LIT_INT = 298,
     LIT_STR = 299,
-    LIT_REAL = 300,
-    SEMICOLON = 301
+    LIT_REAL = 300
   };
 #endif
 /* Tokens.  */
@@ -135,7 +134,6 @@ extern int yydebug;
 #define LIT_INT 298
 #define LIT_STR 299
 #define LIT_REAL 300
-#define SEMICOLON 301
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -152,7 +150,7 @@ union YYSTYPE
     struct Type *type;
     struct Expr *expr;
 
-#line 156 "y.tab.h" /* yacc.c:1909  */
+#line 154 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -1,9 +1,9 @@
 program test
     declare 
         a: integer;
-    procedure add(a : integer;) return integer
+    procedure add(a : integer;b : float) return integer
     declare 
-        b: integer := 1 + 1;
+        b: integer := 1;
         begin
         end
     end add;

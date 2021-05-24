@@ -1,9 +1,10 @@
 program test
     declare 
-        a: integer;
-    procedure add(a : integer;b : float) return integer
+        a: integer ;
+    procedure add() return integer
     declare 
-        b: integer := 1;
+        d : Constant := 123 + c;
+        e : Constant : integer := -a;
         begin
         end
     end add;

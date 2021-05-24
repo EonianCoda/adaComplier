@@ -102,7 +102,7 @@ void arrayTypeCheck(struct Expr *arr) {
   else rhsgood = true;
 
   if (lhsgood && rhsgood) {
-    arr->type = copyType(a->type);
+    arr->type = createType(a->type->itemType->type);
   }
 }
 

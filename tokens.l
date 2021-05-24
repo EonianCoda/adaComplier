@@ -123,28 +123,23 @@ char stringTmp[MAX_LINE_LENG];
 
 
 "!="				{
-                       LIST;
-                       token("NOTEQ")
+                       token("NOTEQ");
                        return NOTEQ;
                     }
 "<="				{
-                       LIST;
-                       token("LEEQ")
+                       token("LEEQ");
                        return LEEQ;
                     }
 ">="				{
-                       LIST;
-                       token("GREQ")
+                       token("GREQ");
                        return GREQ;
                     }
 "/="				{
-                       LIST;
-                       token("DIVEQ")
+                       token("DIVEQ");
                        return DIVEQ;
                     }
 ":="				{
-                        LIST;
-                        token("ASSIGN")
+                        token("ASSIGN");
                         return ASSIGN;
                     }
 

@@ -140,7 +140,8 @@ paraDeclars:
         ;
 
 paraDeclar:
-        varAssignType { Trace("add new parameter\n"); }
+        /* Empty */   { Trace("No parameters!\n"); }
+        | varAssignType { Trace("add new parameter\n"); }
         | paraDeclar ';' varAssignType 
         ;
 
@@ -186,11 +187,16 @@ variable_reference:
         {
             $$ = createExpr(Op_INDEX, createVarExpr($1), $3);
             arrayTypeCheck($$);
+            Trace("Reducing to a array element ref\n");
         }
         ;
 prior_expr:
-        '(' boolean_expr ')' { $$ = $2; }
-        | variable_reference
+        '(' boolean_expr ')' 
+        { 
+            $$ = $2; 
+            Trace("Reducing to prior expression\n");
+        }
+        | variable_reference { Trace("Reducing to prior expression by var ref\n"); }
         ;
 factor:
         prior_expr { Trace("Reducing to factor\n"); }
@@ -203,6 +209,7 @@ factor:
         {
             $$ = createExpr(Op_UMINUS, $2, NULL);
             unaryOpCheck($$);
+            Trace("Unary minus expression\n");
         }
         ;
 
@@ -313,10 +320,13 @@ varDeclar:
         }
         | varAssignType ASSIGN boolean_expr ';' 
         {
-            Trace("Test for boolean expression\n");
-            // if($3->type != $5.type) semanticError("init error(left-side and right-side have different type)");
-            // else assign_type($3, false);;
-            // destroy_type($3);
+            if($3->type == NULL || $1->type != $3->type->type)
+            {
+                semanticError("init error(left-side and right-side have different type)");
+            }
+            destroy_type($1);
+            destroyExpr($3);
+            Trace("Reducing to varDeclar\n");
         }
         ;
 
@@ -330,15 +340,25 @@ varAssignType:
         ;
 
 constVarDeclar:
-        identifier_list  ':' CONSTANT ASSIGN literalConstant ';' 
+        identifier_list  ':' CONSTANT ASSIGN boolean_expr ';' 
         { 
-            assign_type_byEnum($5.type, true);
+            if($5->type == NULL)
+            {
+                semanticError("LSH is VOID type");
+                assign_type_byEnum(Type_VOID, true);
+            }
+            assign_type($5->type, true);
         }
-        | identifier_list ':' CONSTANT ':' type ASSIGN literalConstant ';' 
+        | identifier_list ':' CONSTANT ':' type ASSIGN boolean_expr ';' 
         { 
-            if($5->type != $7.type) semanticError("init error(left-side and right-side have different type)");
-            else assign_type($5, true);
+            assign_type($5, true);
+            if($7->type == NULL || $5->type != $7->type->type)
+            {
+                semanticError("init error(left-side and right-side have different type)");
+            }
             destroy_type($5);
+            destroyExpr($7);
+            Trace("Reducing to constVarDeclar\n");
         }
         ;
 
@@ -383,12 +403,20 @@ type_keyword:
              ;
 literalConstant:
         LIT_INT { Trace("literal_integer \n");}
+        | '-' LIT_INT 
+        { 
+            $$ = $2;
+            $$.integer = -($$.real);
+            Trace("Minus integer\n");
+        }
+
         | LIT_STR
         | LIT_REAL
         | '-' LIT_REAL 
         {
             $$ = $2;
             $$.real = -($$.real);
+            Trace("Minus real\n");
         } 
         | BOOL_TRUE { $$.type = Type_BOOL; $$.boolean = true; }
         | BOOL_FALSE { $$.type = Type_BOOL; $$.boolean = false; }

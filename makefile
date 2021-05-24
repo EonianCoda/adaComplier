@@ -16,7 +16,7 @@ lex.yy.c: tokens.l
 	$(LEX) $^
 
 lex.yy.o: lex.yy.c y.tab.h util.h
-y.tab.o: y.tab.c symtable.h util.h
+y.tab.o: y.tab.c symtable.h util.h semcheck.h
 
 symtable.o: symtable.c symtable.h util.h
 util.o: util.c util.h

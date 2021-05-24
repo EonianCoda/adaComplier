@@ -1082,50 +1082,45 @@ case 34:
 YY_RULE_SETUP
 #line 125 "tokens.l"
 {
-                       LIST;
-                       token("NOTEQ")
+                       token("NOTEQ");
                        return NOTEQ;
                     }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 130 "tokens.l"
+#line 129 "tokens.l"
 {
-                       LIST;
-                       token("LEEQ")
+                       token("LEEQ");
                        return LEEQ;
                     }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 135 "tokens.l"
+#line 133 "tokens.l"
 {
-                       LIST;
-                       token("GREQ")
+                       token("GREQ");
                        return GREQ;
                     }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 140 "tokens.l"
+#line 137 "tokens.l"
 {
-                       LIST;
-                       token("DIVEQ")
+                       token("DIVEQ");
                        return DIVEQ;
                     }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 145 "tokens.l"
+#line 141 "tokens.l"
 {
-                        LIST;
-                        token("ASSIGN")
+                        token("ASSIGN");
                         return ASSIGN;
                     }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 152 "tokens.l"
+#line 147 "tokens.l"
 {
                                             token("BEGIN");
                                             return BEGIN_;
@@ -1133,7 +1128,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 156 "tokens.l"
+#line 151 "tokens.l"
 {
                                             token("BOOLEAN");
                                             return BOOLEAN;
@@ -1141,7 +1136,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 160 "tokens.l"
+#line 155 "tokens.l"
 {
                                             token("BREAK");
                                             return BREAK;
@@ -1149,7 +1144,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 164 "tokens.l"
+#line 159 "tokens.l"
 {
                                             token("CHARACTER");
                                             return CHARACTER;
@@ -1157,7 +1152,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 168 "tokens.l"
+#line 163 "tokens.l"
 {
                                             token("CASE");
                                             return CASE;
@@ -1165,7 +1160,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 172 "tokens.l"
+#line 167 "tokens.l"
 {
                                             token("CONTINUE");
                                             return CONTINUE;
@@ -1173,7 +1168,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 176 "tokens.l"
+#line 171 "tokens.l"
 {
                                             token("CONSTANT");
                                             return CONSTANT;
@@ -1181,7 +1176,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 180 "tokens.l"
+#line 175 "tokens.l"
 {
                                             token("DECLARE");
                                             return DECLARE;
@@ -1189,7 +1184,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 184 "tokens.l"
+#line 179 "tokens.l"
 {
                                             token("DO");
                                             return DO;
@@ -1197,7 +1192,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 188 "tokens.l"
+#line 183 "tokens.l"
 {
                                             token("ELSE");
                                             return ELSE;
@@ -1205,7 +1200,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 192 "tokens.l"
+#line 187 "tokens.l"
 {
                                             token("END");
                                             return END;
@@ -1213,7 +1208,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 196 "tokens.l"
+#line 191 "tokens.l"
 {
                                             token("EXIT");
                                             return EXIT;
@@ -1221,7 +1216,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 200 "tokens.l"
+#line 195 "tokens.l"
 {
                                             token("FLOAT");
                                             return FLOAT;
@@ -1229,7 +1224,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 204 "tokens.l"
+#line 199 "tokens.l"
 {
                                             token("FOR");
                                             return FOR;
@@ -1237,7 +1232,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 208 "tokens.l"
+#line 203 "tokens.l"
 {
                                             token("IF");
                                             return IF;
@@ -1245,7 +1240,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 212 "tokens.l"
+#line 207 "tokens.l"
 {
                                             token("IN");
                                             return IN;
@@ -1253,7 +1248,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 216 "tokens.l"
+#line 211 "tokens.l"
 {
                                             token("INTEGER");
                                             return INTEGER;
@@ -1261,7 +1256,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 220 "tokens.l"
+#line 215 "tokens.l"
 {
                                             token("LOOP");
                                             return LOOP;
@@ -1269,7 +1264,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 224 "tokens.l"
+#line 219 "tokens.l"
 {
                                             token("PRINT");
                                             return PRINT;
@@ -1277,7 +1272,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 228 "tokens.l"
+#line 223 "tokens.l"
 {
                                             token("PRINTLN");
                                             return PRINTLN;
@@ -1285,7 +1280,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 232 "tokens.l"
+#line 227 "tokens.l"
 {
                                             token("PROCEDURE");
                                             return PROCEDURE;
@@ -1293,7 +1288,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 236 "tokens.l"
+#line 231 "tokens.l"
 {
                                             token("PROGRAM");
                                             return PROGRAM;
@@ -1301,7 +1296,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 240 "tokens.l"
+#line 235 "tokens.l"
 {
                                             token("RETURN");
                                             return RETURN;
@@ -1309,7 +1304,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 244 "tokens.l"
+#line 239 "tokens.l"
 {
                                             token("STRING");
                                             return STRING;
@@ -1317,7 +1312,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 248 "tokens.l"
+#line 243 "tokens.l"
 {
                                             token("THEN");
                                             return THEN;
@@ -1325,7 +1320,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 252 "tokens.l"
+#line 247 "tokens.l"
 {
                                             token("WHILE");
                                             return WHILE;
@@ -1333,7 +1328,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 257 "tokens.l"
+#line 252 "tokens.l"
 {
                                             token("BOOL_TRUE");
                                             return BOOL_TRUE;
@@ -1341,7 +1336,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 261 "tokens.l"
+#line 256 "tokens.l"
 {
                                             token("BOOL_FALSE");
                                             return BOOL_FALSE;
@@ -1349,7 +1344,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 265 "tokens.l"
+#line 260 "tokens.l"
 {
                                             token("AND");
                                             return AND;
@@ -1357,7 +1352,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 269 "tokens.l"
+#line 264 "tokens.l"
 {
                                             token("NOT");
                                             return NOT;
@@ -1365,7 +1360,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 273 "tokens.l"
+#line 268 "tokens.l"
 {
                                             token("OR");
                                             return OR;
@@ -1373,7 +1368,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 278 "tokens.l"
+#line 273 "tokens.l"
 {	
                             LIST;
                             if (DEBUG_FLAG)
@@ -1391,7 +1386,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 293 "tokens.l"
+#line 288 "tokens.l"
 {
                         LIST;
                         printf("%d:%s\n", linenum+1, buf);
@@ -1401,10 +1396,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 299 "tokens.l"
+#line 294 "tokens.l"
 ECHO;
 	YY_BREAK
-#line 1407 "lex.yy.c"
+#line 1402 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(blockComment):
 case YY_STATE_EOF(inlineComment):
@@ -2412,4 +2407,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 299 "tokens.l"
+#line 294 "tokens.l"

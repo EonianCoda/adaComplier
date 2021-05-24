@@ -4,12 +4,13 @@
 #include <stdlib.h>
 #include "util.h"
 #include "y.tab.h"
+#define TOKEN_DEBUG_FLAG (false)
 #define LIST				strcat(buf,yytext)
 #define ADD_STRING(s)		strcat(stringTmp,s)
-#define token(t) 			{LIST; if (DEBUG_FLAG) printf("<token: %s>\n", t);}
-#define symbolToken(t)      {LIST; if (DEBUG_FLAG) printf("<Symbol:'%c'>\n", t); return (t);}
-#define tokenInteger(i) 	{LIST; if (DEBUG_FLAG) printf("<integer:%d>\n",i); yylval.literal.type = Type_INT; yylval.literal.integer = i; return (LIT_INT);}
-#define tokenReal(r)        {LIST; if (DEBUG_FLAG) printf("<real:%e>\n",r);  yylval.literal.type = Type_REAL; yylval.literal.real = r; return (LIT_REAL);}
+#define token(t) 			{LIST; if (TOKEN_DEBUG_FLAG) printf("<token: %s>\n", t);}
+#define symbolToken(t)      {LIST; if (TOKEN_DEBUG_FLAG) printf("<Symbol:'%c'>\n", t); return (t);}
+#define tokenInteger(i) 	{LIST; if (TOKEN_DEBUG_FLAG) printf("<integer:%d>\n",i); yylval.literal.type = Type_INT; yylval.literal.integer = i; return (LIT_INT);}
+#define tokenReal(r)        {LIST; if (TOKEN_DEBUG_FLAG) printf("<real:%e>\n",r);  yylval.literal.type = Type_REAL; yylval.literal.real = r; return (LIT_REAL);}
 
 #define MAX_LINE_LENG 256
 
@@ -122,10 +123,6 @@ char stringTmp[MAX_LINE_LENG];
 "="					{symbolToken('=');}
 
 
-"!="				{
-                       token("NOTEQ");
-                       return NOTEQ;
-                    }
 "<="				{
                        token("LEEQ");
                        return LEEQ;
@@ -135,8 +132,8 @@ char stringTmp[MAX_LINE_LENG];
                        return GREQ;
                     }
 "/="				{
-                       token("DIVEQ");
-                       return DIVEQ;
+                       token("NOTEQ");
+                       return NOTEQ;
                     }
 ":="				{
                         token("ASSIGN");
@@ -276,7 +273,7 @@ char stringTmp[MAX_LINE_LENG];
 
 [a-zA-Z][a-zA-Z0-9_]*   {	
                             LIST;
-                            if (DEBUG_FLAG)
+                            if (TOKEN_DEBUG_FLAG)
                             {
                                 printf("<ID:%s>\n", yytext);
                             }

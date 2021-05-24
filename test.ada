@@ -1,31 +1,17 @@
 program test
     declare 
         a: integer ;
-    procedure add() return integer
-        declare 
-            d : integer[10];
+        b: integer ;
+    procedure apple
+        declare
+            p: integer;
         begin
-            while (TRUE) loop
-                begin
-                    a := 5;
-                end
+            for (p in 5 .. 6) loop
+                print a;
             end loop;
-            print a;
-            println a;
-            a := 5;
-            while (TRUE) loop
-                begin
-                    a := 5;
-                end
-            end loop;
-            for ( a in 0 .. 5 ) loop
-                begin
-                    print a;
-                end
-            end loop ;
-        end
-    end add;
+        end;
+    end apple;
     begin
-
+        apple();
     end
 end test

@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define DEBUG_FLAG (true)
-#define ENABLE_BEFORE_LINENUMBER (false)
-#define DEBUG_BEFORE_LINENUMBER (9)
+#define ENABLE_BEFORE_LINENUMBER (true)
+#define DEBUG_BEFORE_LINENUMBER (15)
 
 extern char *OpName[];
 enum TypeEnum {

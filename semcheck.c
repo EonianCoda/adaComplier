@@ -24,8 +24,8 @@ void returnCheck(struct Expr *expr, struct Type *expected)
 void forCheck(int lowerBound, int upperBound) {
   if (lowerBound < 0 || upperBound < 0)
     semanticError("loop parameter is less than zero\n");
-  if (lowerBound > upperBound)
-    semanticError("loop parameter is not in the incremental order\n");
+  // if (lowerBound > upperBound)
+  //   semanticError("loop parameter is not in the incremental order\n");
 }
 
 void conditionCheck(struct Expr *expr, const char *ifwhile) 
@@ -108,7 +108,13 @@ void arrayTypeCheck(struct Expr *arr) {
 }
 
 void printCheck(struct Expr *expr) {
-  if (expr->type == NULL) return;
+  if (expr->type == NULL) 
+  {
+      showType(expr->type);
+      printf("\n");
+      return;
+  }
+  
   if (isScalarType(expr->type)) {
     ;
   }
@@ -254,40 +260,53 @@ void unaryOpCheck(struct Expr *expr)
   }
 }
 
-// void functionCheck(struct Expr *expr) {
-//   struct Expr *nm = expr->args, *args = nm->next;
-//   struct SymTableEntry *a = getSymbol(nm->name);
-//   // find a function symbol
-//   if (a == NULL) {
-//     semanticError("symbol '%s' is not defined\n", nm->name);
-//     return ;
-//   }
-//   while (a->kind != SymbolKind_procedure && a->prev != NULL) {
-//     a = a->prev;
-//   }
-//   if (a->kind != SymbolKind_procedure) {
-//     semanticError("symbol '%s' is not a function\n", nm->name);
-//     return ;
-//   }
-//   expr->type = copyType(a->type);
-//   int i, nargs = a->attr.argType.arity;
-//   struct Expr *ptr = args;
-//   for (i = 0; i < nargs && ptr != NULL; i++, ptr = ptr->next) {
-//     if (ptr->type == NULL) continue;
-//     if (!canConvertTypeImplicitly(ptr->type, a->attr.argType.types[i])) {
-//       semanticError("argument %d of '%s' type mismatch, expected '", i+1, nm->name);
-//       showType(a->attr.argType.types[i]);
-//       printf("' but argument is '");
-//       showType(ptr->type);
-//       puts("'");
-//     }
-//   }
-//   if (ptr != NULL) {
-//     semanticError("too many arguments to function '%s'\n", nm->name);
-//   }
-//   else if (i < nargs) {
-//     semanticError("too few arguments to function '%s'\n", nm->name);
-//   }
-// }
+void functionCheck(struct Expr *expr) {
+    struct Expr *nm = expr->args, *args = nm->next;
+    struct SymTableEntry *a = getSymbol(nm->name);
+    // find a function symbol
+    if (a == NULL) 
+    {
+      semanticError("symbol '%s' is not defined\n", nm->name);
+      return;
+    }
+    if (a->kind != SymbolKind_procedure) 
+    {
+      semanticError("symbol '%s' is not a procedure\n", nm->name);
+      return ;
+    }
+    expr->type = copyType(a->type);
+    
+    struct Args* funArgs = a->args;
+    struct Expr *ptr = args;
+    
+    //no args
+    if(funArgs == NULL &&  ptr == NULL) return;
+
+    int i = 0;
+    while(true)
+    {
+        if(funArgs == NULL)
+        {
+            if(ptr != NULL) semanticError("too many arguments to function '%s'\n", nm->name);
+            return;
+        }
+        else if(ptr == NULL)
+        {
+            if(funArgs != NULL) semanticError("too few arguments to function '%s'\n", nm->name);
+            return;
+        }
+        if (!canConvertTypeImplicitly(ptr->type, funArgs->type)) 
+        {
+            semanticError("argument %d of '%s' type mismatch, expected '", i+1, nm->name);
+            showType(funArgs->type);
+            printf("' but argument is '");
+            showType(ptr->type);
+            puts("'");
+        }
+        funArgs = funArgs->NEXT;
+        ptr = ptr->next;
+        i++;
+    }
+}
 
 

@@ -27,7 +27,7 @@ void semanticError(const char *fmt, ...) {
   vprintf(fmt, ap);
   va_end(ap);
   errorCount++;
-  exit(-1);
+  //exit(-1);
 }
 
 /******************************* Other ********************************/
@@ -104,7 +104,7 @@ bool isSameType(struct Type *t1, struct Type *t2)
     if (t1->type != t2->type) return false;
     else if (t1->type == Type_ARRAY)
     {
-        if(t1->itemType->type != t2->itemType->type || t1->itemType->size == t2->itemType->size) return false;
+        if(t1->itemType->type != t2->itemType->type || t1->itemType->size != t2->itemType->size) return false;
     }
     return true;
 }
@@ -112,22 +112,9 @@ bool isSameType(struct Type *t1, struct Type *t2)
 bool canConvertTypeImplicitly(struct Type *from, struct Type *to) {
   // I think integer [5] is not real [5]
 
-  //bool y = isSameType(from, to);
-  //if (y) return True;
-  //if (from->type == Type_INTEGER && to->type == Type_REAL) return True;
-  //return false;
-
-//   while (from->type == Type_ARRAY && to->type == Type_ARRAY) {
-//     // check size of each dimension
-//     if (from->upperBound - from->lowerBound != to->upperBound - to->lowerBound) {
-//       return false;
-//     }
-//     from = from->itemType;
-//     to = to->itemType;
-//   }
-  if (from->type == to->type) return true;
-  if (from->type == Type_INT && to->type == Type_REAL) return true;
-  return false;
+    if (isSameType(from, to)) return true;
+    else if (from->type == Type_INT && to->type == Type_REAL) return true;
+    return false;
 }
 
 bool isScalarType(struct Type *type)

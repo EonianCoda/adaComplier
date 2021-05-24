@@ -18,8 +18,8 @@ lex.yy.c: tokens.l
 lex.yy.o: lex.yy.c y.tab.h util.h
 y.tab.o: y.tab.c symtable.h util.h semcheck.h
 
-symtable.o: symtable.c symtable.h util.h
 util.o: util.c util.h
+symtable.o: symtable.c symtable.h util.h
 semcheck.o: semcheck.c semcheck.h symtable.h util.h 
 
 

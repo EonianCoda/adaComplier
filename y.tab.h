@@ -82,12 +82,11 @@ extern int yydebug;
     LEEQ = 292,
     NOTEQ = 293,
     GREQ = 294,
-    DIVEQ = 295,
-    LOWER_THEN_INDEX = 296,
-    ID = 297,
-    LIT_INT = 298,
-    LIT_STR = 299,
-    LIT_REAL = 300
+    LOWER_THEN_INDEX = 295,
+    ID = 296,
+    LIT_INT = 297,
+    LIT_STR = 298,
+    LIT_REAL = 299
   };
 #endif
 /* Tokens.  */
@@ -128,19 +127,18 @@ extern int yydebug;
 #define LEEQ 292
 #define NOTEQ 293
 #define GREQ 294
-#define DIVEQ 295
-#define LOWER_THEN_INDEX 296
-#define ID 297
-#define LIT_INT 298
-#define LIT_STR 299
-#define LIT_REAL 300
+#define LOWER_THEN_INDEX 295
+#define ID 296
+#define LIT_INT 297
+#define LIT_STR 298
+#define LIT_REAL 299
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 16 "parser.y" /* yacc.c:1909  */
+#line 17 "parser.y" /* yacc.c:1909  */
 
     bool flag;
     enum TypeEnum typeEnum;
@@ -150,8 +148,9 @@ union YYSTYPE
     struct Type *type;
     struct Expr *expr;
     struct ExprList args;
+    struct Args *funcArgs;
 
-#line 155 "y.tab.h" /* yacc.c:1909  */
+#line 154 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

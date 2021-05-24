@@ -10,6 +10,7 @@ extern int linenum;
 extern FILE *yyin;
 extern int yylex(void);
 
+struct SymTableEntry *curFunc = NULL;
 %}
 
 %union
@@ -22,6 +23,7 @@ extern int yylex(void);
     struct Type *type;
     struct Expr *expr;
     struct ExprList args;
+    struct Args *funcArgs;
 }
 %token BEGIN_
 // Output keywords
@@ -45,7 +47,7 @@ extern int yylex(void);
 %left OR
 %left AND
 %right NOT
-%left '<' LEEQ NOTEQ GREQ '>' '=' DIVEQ
+%left '<' LEEQ NOTEQ GREQ '>' '='
 %left '+' '-'
 %left '*' '/'
 
@@ -62,22 +64,27 @@ extern int yylex(void);
 
 
 /* tokens */
-%type<typeEnum> type_keyword procedureReturn
-%type<type> type varAssignType
+%type<typeEnum> type_keyword 
+%type<type> type varAssignType procedureReturn
 %type<literal> literalConstant
 %type<oper> mul_op add_op rel_op
-%type<expr> variable_reference
+%type<expr> variable_reference function_invoc
 %type<expr> prior_expr factor term expression relation_expr boolean_factor boolean_term boolean_expr
 %type<args> arg_list arguments
+%type<funcArgs> paraDeclars
 %%
+
+/***************************************************/
+/********************Main Block*********************/
+/***************************************************/
+
 program:        PROGRAM ID 
                 {
                     addVar($2, SymbolKind_program);
-                    clear_stack();
+                    nextScope();
                 }
                 programbody END ID
                 {
-
                     Trace("Reducing to program\n");
                 }
                 ;
@@ -98,10 +105,18 @@ programbody:
             
             ;
 block: 
-        declarations compound_stmt { Trace("Reducing to BLOCK\n"); }
+        {  
+            nextScope(); 
+        }
+        declarations compound_stmt ';'
+        {
+            prevScope();
+            Trace("Reducing to BLOCK\n"); 
+        }
         ;
+
 /***************************************************/
-/********************Procedure**********************/
+/****************Procedure Declare******************/
 /***************************************************/
 procedureDeclars:
         /* empty */ { Trace("No procedure!\n"); }
@@ -113,31 +128,55 @@ procedureDeclar:
         PROCEDURE ID 
         {
             addVar($2, SymbolKind_procedure);
+            curFunc = getSymbol($2);
             nextScope();
         }
         paraDeclars
         {
+            curFunc->args = $4;
+            // struct Args* test = curFunc->args;
+            // if(test == NULL) printf("No args!");
+            // else
+            // {
+            //     while(test)
+            //     {
+            //         printf("%d, ",test->type->type);
+            //         test = test->NEXT;
+            //     }
+            //     printf("\n");
+            // }
+            
             Trace("End this procedure's parameter declaration!\n");
         }
         procedureReturn
         {
-            assign_type_byEnum($6, false);
-            clear_stack();
+            curFunc->type = $6;
+        }
+        {
+            //the arg of the procedure has the same scope as the content 
+            curScopeLevel--; 
         }
         block END ID ';'
-        { 
+        {
             Trace("End this procedure declaration!\n");
-            prevScope();
+            curFunc = NULL;
         }
         ;
 
 procedureReturn:
-        /* Empty */ {Trace("Return Type= Void!\n"); $$ = Type_VOID;}
-        | RETURN type {$$ = $2->type;}
+        /* Empty */ { $$ = createType(Type_VOID); }
+        | RETURN type {$$ = $2;}
         ;
 paraDeclars:
-        /* Empty */ { Trace("No parameters!\n"); }
+        /* Empty */ 
+        { 
+            $$ = NULL;
+            Trace("No parameters!\n"); 
+        }
         | '(' paraDeclar ')'
+        {
+            $$ = getArgs();
+        }
         ;
 
 paraDeclar:
@@ -150,7 +189,7 @@ paraDeclar:
 /********************statement**********************/
 /***************************************************/
 compound_stmt:
-        BEGIN_ statements END
+        BEGIN_  statements END
         ;
 
 statements:
@@ -162,6 +201,40 @@ statement:
         | conditional_stmt { Trace("Reducing to conditional_stmt\n");  }
         | while_stmt  { Trace("Reducing to  while_stmt\n");  }
         | for_stmt  { Trace("Reducing to for_stmt \n");  }
+        | procedure_call { Trace("Reducing to procedure_call \n");  }
+        ;
+
+procedure_call: function_invoc ';' 
+        { 
+            destroyExpr($1);
+        }
+        ;
+
+function_invoc: 
+        ID '(' arg_list ')'
+        {
+            Trace("Reducing to function_invoc \n");
+            $$ = createFuncExpr($1, $3.first);
+            functionCheck($$);
+        }
+        ;
+
+arg_list:
+        /* no arguments */ { initExprList(&$$); }
+        | arguments
+        ;
+
+arguments:
+        boolean_expr
+        {
+            initExprList(&$$);
+            addToExprList(&$$, $1);
+        }
+        | arguments ',' boolean_expr
+        {
+            addToExprList(&$1, $3); 
+            $$ = $1;
+        }
         ;
 
 while_stmt:
@@ -217,8 +290,10 @@ simple_stmt:
             destroyExpr($3);
             Trace("Reducing to simple stmt (Assign statement)\n"); 
         }
-        | print_stmt 
+        | print_keyword boolean_expr ';'
         { 
+            printCheck($2);
+            destroyExpr($2);
             Trace("print statement\n"); 
         }
         | READ variable_reference ';'
@@ -226,10 +301,9 @@ simple_stmt:
             destroyExpr($2);
         }
         ;
-
-print_stmt:
-        PRINT boolean_expr ';'
-        | PRINTLN boolean_expr ';'
+print_keyword:
+        PRINT
+        | PRINTLN
         ;
 /***************************************************/
 /*******************Expression*********************/
@@ -257,7 +331,9 @@ prior_expr:
             Trace("Reducing to prior expression\n");
         }
         | variable_reference { Trace("Reducing to prior expression by var ref\n"); }
+        | function_invoc
         ;
+
 
 factor:
         prior_expr { Trace("Reducing to factor\n"); }
@@ -304,15 +380,8 @@ relation_expr:
         expression { Trace("Reducing to relation_expr\n"); }
         | relation_expr rel_op expression
         {
-            if( $2 == Op_DIVIDEEQ)
-            {
-                Trace("/= TODO");
-            }
-            else
-            {
-                $$ = createExpr($2, $1, $3);
-                relOpCheck($$);
-            }
+            $$ = createExpr($2, $1, $3);
+            relOpCheck($$);
         }
         ;
 rel_op:
@@ -322,7 +391,6 @@ rel_op:
         | GREQ { $$ = Op_GEQUAL; }
         | '>' { $$ = Op_GREATER; }
         | NOTEQ { $$ = Op_NOTEQUAL; }
-        | DIVEQ { $$ = Op_DIVIDEEQ; }
         ;
 
 boolean_factor:
@@ -362,7 +430,7 @@ declarations:
         ;
 declaration:
         /* Empty */
-        | declaration varDeclar { }
+        | declaration varDeclar 
         | declaration constVarDeclar { }
         ;
 
@@ -437,11 +505,12 @@ identifier_list:
          | identifier_list ',' ID { addVar($3, SymbolKind_variable); }
          ;
 
-
+/***************************************************/
+/****************Type And Constant******************/
+/***************************************************/
 type:
         type_keyword %prec LOWER_THEN_INDEX
         { 
-            Trace("Constant Type\n"); 
             $$ = malloc(sizeof(struct Type));
             $$->type = $1;
             $$->itemType = NULL;
@@ -450,7 +519,6 @@ type:
         {
             if ($3.type == Type_INT && $3.integer > 0)
             {
-                Trace("Array Type!\n");
                 $$ = malloc(sizeof(struct Type));
                 $$->type = Type_ARRAY;
                 $$->itemType = malloc(sizeof(struct ArrayItems));
@@ -459,7 +527,7 @@ type:
             }
             else
             {
-                semanticError("Array can define by only positive integer!");
+                semanticError("Array should be defined by positive integer");
             }
         }
         ;
@@ -526,6 +594,6 @@ int main(int argc, char *argv[])
     }
     PrintSymbolTable();
     //clear
-    initSymbolTable();
+    destroySymbolTable();
 }
 

@@ -109,11 +109,12 @@ bool isSameType(struct Type *t1, struct Type *t2)
     return true;
 }
 
-bool canConvertTypeImplicitly(struct Type *from, struct Type *to) {
-  // I think integer [5] is not real [5]
-
+bool canConvertTypeImplicitly(struct Type *from, struct Type *to) 
+{
+    // I think integer [5] is not real [5]
     if (isSameType(from, to)) return true;
     else if (from->type == Type_INT && to->type == Type_REAL) return true;
+    else if (from->type == Type_REAL && to->type == Type_INT) return true;
     return false;
 }
 

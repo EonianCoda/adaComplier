@@ -3,22 +3,26 @@
 
 void returnCheck(struct Expr *expr, struct Type *expected) 
 {
-  if (expected == NULL) {
-    semanticError("program cannot be returned\n");
-  }
-  else if (expected->type == Type_VOID) {
-    semanticError("procedure cannot be returned\n");
-  }
-  else if (expr->type == NULL) {
-    ; // don't show error
-  }
-  else if (!isSameType(expr->type, expected)) {
-    semanticError("return type mismatch, return type is '");
-    showType(expr->type);
-    printf("' but '");
-    showType(expected);
-    printf("' is expected\n");
-  }
+    if (expected == NULL) 
+    {
+      semanticError("program cannot be returned\n");
+    }
+    else if (expected->type == Type_VOID) 
+    {
+      semanticError("procedure cannot be returned\n");
+    }
+    else if (expr->type == NULL) 
+    {
+      ; // don't show error
+    }
+    else if (!isSameType(expr->type, expected)) 
+    {
+        semanticError("return type mismatch, return type is '");
+        showType(expr->type);
+        printf("' but '");
+        showType(expected);
+        printf("' is expected\n");
+    }
 }
 
 void forCheck(int lowerBound, int upperBound) {
@@ -110,8 +114,6 @@ void arrayTypeCheck(struct Expr *arr) {
 void printCheck(struct Expr *expr) {
   if (expr->type == NULL) 
   {
-      showType(expr->type);
-      printf("\n");
       return;
   }
   

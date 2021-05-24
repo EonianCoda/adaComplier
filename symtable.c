@@ -97,7 +97,7 @@ void assign_type_byEnum(enum TypeEnum type, bool constant)
 struct Args* getArgs()
 {
     struct SymbolStack* top = varList;
-    if(top == NULL) return NULL;
+    if(top == NULL || top->node->level != curScopeLevel) return NULL;
     struct Args *n = malloc(sizeof(struct Args)), *tmp = n;
 
 

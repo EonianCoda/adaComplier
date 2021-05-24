@@ -178,7 +178,6 @@ paraDeclars:
             $$ = getArgs();
         }
         ;
-
 paraDeclar:
         /* Empty */   { Trace("No parameters!\n"); }
         | varAssignType { Trace("add new parameter\n"); }
@@ -202,8 +201,20 @@ statement:
         | while_stmt  { Trace("Reducing to  while_stmt\n");  }
         | for_stmt  { Trace("Reducing to for_stmt \n");  }
         | procedure_call { Trace("Reducing to procedure_call \n");  }
+        | return_stmt
         ;
 
+return_stmt: 
+        RETURN boolean_expr ';'
+        {
+            returnCheck($2, curFunc->type);
+            destroyExpr($2);
+        }
+        | RETURN ';'
+        {
+            if(curFunc->type != Type_VOID) semanticError("Procedure %s should have the return value!\n", curFunc->name);
+        }
+        ;
 procedure_call: function_invoc ';' 
         { 
             destroyExpr($1);
@@ -320,7 +331,6 @@ variable_reference:
             $$ = createExpr(Op_INDEX, createVarExpr($1), $3);
             arrayTypeCheck($$);
             Trace("Reducing to a array element ref\n");
-
         }
         ;
         

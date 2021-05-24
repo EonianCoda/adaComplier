@@ -161,18 +161,20 @@ statement:
         ;
 
 simple_stmt:
-        PRINT boolean_expr ';'
+        print_stmt 
+        { 
+            Trace("print statement\n"); 
+        }
+        | READ variable_reference ';'
         {
-            printCheck($2);
             destroyExpr($2);
         }
-        | PRINTLN boolean_expr ';'
-        {
-            printCheck($2);
-            destroyExpr($2);
-        }
-;
+        ;
 
+print_stmt:
+        PRINT boolean_expr ';'
+        | PRINTLN boolean_expr ';'
+        ;
 /***************************************************/
 /*******************Expression*********************/
 /***************************************************/
@@ -198,6 +200,7 @@ prior_expr:
         }
         | variable_reference { Trace("Reducing to prior expression by var ref\n"); }
         ;
+
 factor:
         prior_expr { Trace("Reducing to factor\n"); }
         | literalConstant
@@ -285,8 +288,7 @@ boolean_term:
 boolean_expr:
         boolean_term { Trace("Reducing to boolean_expr\n"); }
         | boolean_expr OR boolean_term
-        {
-            
+        {  
             $$ = createExpr(Op_OR, $1, $3);
             boolOpCheck($$);
         }

@@ -269,6 +269,10 @@ char stringTmp[MAX_LINE_LENG];
                                             token("OR");
                                             return OR;
                                         }
+[Rr][Ee][Aa][Dd]                        {
+                                            token("READ");
+                                            return READ;
+                                        }
 
 [a-zA-Z][a-zA-Z0-9_]*   {	
                             LIST;

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #define DEBUG_FLAG (true)
 #define ENABLE_BEFORE_LINENUMBER (true)
-#define DEBUG_BEFORE_LINENUMBER (6)
+#define DEBUG_BEFORE_LINENUMBER (9)
 
 extern char *OpName[];
 enum TypeEnum {

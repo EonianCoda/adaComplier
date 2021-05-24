@@ -21,6 +21,7 @@ extern int yylex(void);
     struct Constant literal;
     struct Type *type;
     struct Expr *expr;
+    struct ExprList args;
 }
 %token BEGIN_
 // Output keywords
@@ -53,6 +54,7 @@ extern int yylex(void);
 
 
 
+
 %token <name> ID
 
 // literals
@@ -66,9 +68,7 @@ extern int yylex(void);
 %type<oper> mul_op add_op rel_op
 %type<expr> variable_reference
 %type<expr> prior_expr factor term expression relation_expr boolean_factor boolean_term boolean_expr
-
-
-
+%type<args> arg_list arguments
 %%
 program:        PROGRAM ID 
                 {
@@ -92,13 +92,14 @@ programbody:
                     Trace("Reducing to procedureDeclars \n");
                 }
             compound_stmt
-                { 
-                    Trace("Reducing to BLOCK\n");
+                {
                     Trace("Reducing to programbody\n");
                 }
             
             ;
-
+block: 
+        declarations compound_stmt { Trace("Reducing to BLOCK\n"); }
+        ;
 /***************************************************/
 /********************Procedure**********************/
 /***************************************************/
@@ -123,7 +124,7 @@ procedureDeclar:
             assign_type_byEnum($6, false);
             clear_stack();
         }
-        declarations compound_stmt END ID ';'
+        block END ID ';'
         { 
             Trace("End this procedure declaration!\n");
             prevScope();
@@ -158,10 +159,65 @@ statements:
         ;
 statement:
         simple_stmt
+        | conditional_stmt { Trace("Reducing to conditional_stmt\n");  }
+        | while_stmt  { Trace("Reducing to  while_stmt\n");  }
+        | for_stmt  { Trace("Reducing to for_stmt \n");  }
+        ;
+
+while_stmt:
+        WHILE boolean_expr 
+        {
+            conditionCheck($2, "while");
+            destroyExpr($2);
+        }
+        LOOP
+        block_or_simple
+        END LOOP ';'
+        {
+            Trace("End While Loop\n");
+        }
+        ;
+
+for_stmt:
+        FOR '(' variable_reference IN literalConstant '.' '.' literalConstant ')'
+        {
+            if($5.type != Type_INT || $8.type != Type_INT) semanticError("for loop range should be integer");
+            //forCheck($5.integer, $8.integer); 
+            destroyExpr($3);
+        }
+        LOOP block_or_simple END LOOP ';'
+        {
+           // if ($<boolVal>3) removeLoopVar(); 
+            Trace("End For Loop\n");
+        }
+        ;
+
+block_or_simple:
+        block { Trace("Reducing to block_or_simple (block)\n"); }
+        | simple_stmt { Trace("Reducing to block_or_simple (simple)\n"); }
+        ;
+
+conditional_stmt:
+                IF condition THEN block_or_simple ELSE block_or_simple END IF ';'
+                | IF condition THEN block_or_simple END IF ';'
+                ;
+
+condition:
+        boolean_expr 
+        {
+            conditionCheck($1, "if");
+            destroyExpr($1);
+        }
         ;
 
 simple_stmt:
-        print_stmt 
+        variable_reference ASSIGN boolean_expr ';' 
+        { 
+            assignCheck($1, $3);
+            destroyExpr($3);
+            Trace("Reducing to simple stmt (Assign statement)\n"); 
+        }
+        | print_stmt 
         { 
             Trace("print statement\n"); 
         }
@@ -190,8 +246,10 @@ variable_reference:
             $$ = createExpr(Op_INDEX, createVarExpr($1), $3);
             arrayTypeCheck($$);
             Trace("Reducing to a array element ref\n");
+
         }
         ;
+        
 prior_expr:
         '(' boolean_expr ')' 
         { 
@@ -315,10 +373,19 @@ varDeclar:
             destroy_type($1);
             Trace("Reducing to varDeclar\n");
         }
-        | identifier_list  ASSIGN  literalConstant ';'  
+        | identifier_list  ASSIGN  boolean_expr ';'  
         { 
-            /****This rule occur error in real ada****/
-            assign_type_byEnum($3.type, false);
+            if($3->type == NULL)
+            {
+                semanticError("init error(left-side and right-side have different type)");
+                assign_type_byEnum(Type_VOID, false);
+            }
+            else
+            {
+                assign_type($3->type, false);
+            }
+            destroyExpr($3);
+            Trace("Reducing to varDeclar\n");
         }
         | varAssignType ASSIGN boolean_expr ';' 
         {

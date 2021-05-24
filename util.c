@@ -27,6 +27,7 @@ void semanticError(const char *fmt, ...) {
   vprintf(fmt, ap);
   va_end(ap);
   errorCount++;
+  exit(-1);
 }
 
 /******************************* Other ********************************/
@@ -193,4 +194,23 @@ void destroyExpr(struct Expr *expr) {
     p = p->next;
     free(q);
   }
+}
+
+
+void initExprList(struct ExprList *list) 
+{
+    list->first = list->last = NULL;
+}
+
+void addToExprList(struct ExprList *list, struct Expr *expr) 
+{
+    if (list->first == NULL) 
+    {
+       list->first = expr;
+    }
+    else 
+    {
+        list->last->next = expr;
+    }
+    list->last = expr;
 }

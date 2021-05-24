@@ -2,12 +2,27 @@ program test
     declare 
         a: integer ;
     procedure add() return integer
-    declare 
-        d : Constant := 123;
-        e : Constant : integer := -a;
+        declare 
+            d : integer[10];
         begin
-            println (-a);
-            read c;
+            while (TRUE) loop
+                begin
+                    a := 5;
+                end
+            end loop;
+            print a;
+            println a;
+            a := 5;
+            while (TRUE) loop
+                begin
+                    a := 5;
+                end
+            end loop;
+            for ( a in 0 .. 5 ) loop
+                begin
+                    print a;
+                end
+            end loop ;
         end
     end add;
     begin

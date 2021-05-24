@@ -149,8 +149,9 @@ union YYSTYPE
     struct Constant literal;
     struct Type *type;
     struct Expr *expr;
+    struct ExprList args;
 
-#line 154 "y.tab.h" /* yacc.c:1909  */
+#line 155 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

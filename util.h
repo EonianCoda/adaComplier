@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define DEBUG_FLAG (true)
-#define ENABLE_BEFORE_LINENUMBER (true)
+#define ENABLE_BEFORE_LINENUMBER (false)
 #define DEBUG_BEFORE_LINENUMBER (9)
 
 extern char *OpName[];
@@ -44,6 +44,11 @@ struct Type{
   struct ArrayItems * itemType;
 };
 
+struct ExprList {
+  struct Expr *first;
+  struct Expr *last;
+};
+
 struct Expr {
   enum Operator op;
   struct Type *type;
@@ -79,3 +84,8 @@ struct Expr *createLitExpr(struct Constant lit);
 struct Expr *createVarExpr(char *name);
 struct Expr *createFuncExpr(char *name, struct Expr *args);
 void destroyExpr(struct Expr *expr);
+
+
+//parameters
+void initExprList(struct ExprList *list);
+void addToExprList(struct ExprList *list, struct Expr *expr);

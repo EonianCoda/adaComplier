@@ -28,7 +28,8 @@ void forCheck(int lowerBound, int upperBound) {
     semanticError("loop parameter is not in the incremental order\n");
 }
 
-void conditionCheck(struct Expr *expr, const char *ifwhile) {
+void conditionCheck(struct Expr *expr, const char *ifwhile) 
+{
   if (expr->type == NULL) {
     ; // don't show error
   }
@@ -155,7 +156,8 @@ void arithOpCheck(struct Expr *expr)
   if (op1->type == NULL || op2->type == NULL) return ;
   bool lhs = op1->type->type == Type_INT || op1->type->type == Type_REAL;
   bool rhs = op2->type->type == Type_INT || op2->type->type == Type_REAL;
-  if (lhs && rhs) { // correct
+  if (lhs && rhs) 
+  { // correct
     if (op1->type->type == Type_REAL || op2->type->type == Type_REAL) {
       // coerce to real
       expr->type = createType(Type_REAL);
@@ -165,7 +167,8 @@ void arithOpCheck(struct Expr *expr)
     }
   }
   else if (expr->op == Op_PLUS
-    && op1->type->type == Type_STR && op2->type->type == Type_STR) {
+    && op1->type->type == Type_STR && op2->type->type == Type_STR) 
+  {
     // string + string is legal
     expr->type = createType(Type_STR);
   }

@@ -3,7 +3,7 @@
 extern int curScopeLevel;
 enum SymbolKind {
   SymbolKind_program, SymbolKind_procedure, SymbolKind_parameter,
-  SymbolKind_variable, SymbolKind_constant, SymbolKind_loopVar
+  SymbolKind_variable, SymbolKind_constant,
 };
 
 

@@ -2,9 +2,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define DEBUG_FLAG (true)
+#define DEBUG_FLAG (false)
 #define ENABLE_BEFORE_LINENUMBER (true)
-#define DEBUG_BEFORE_LINENUMBER (15)
+#define DEBUG_BEFORE_LINENUMBER (20)
 
 extern char *OpName[];
 enum TypeEnum {
@@ -75,7 +75,6 @@ struct Type *createType(enum TypeEnum type);
 void showType(struct Type *type);
 void printType(enum TypeEnum type);
 bool isSameType(struct Type *t1, struct Type *t2);
-bool canConvertTypeImplicitly(struct Type *from, struct Type *to);
 bool isScalarType(struct Type *type);
 
 //for expression

@@ -9,8 +9,16 @@ struct SymTableEntry *symbolTable[SYMTABSIZE];
 struct SymbolStack *varList;
 struct SymbolStack *declaration;
 static char *typeName[] = {"Integer","Real", "Boolean", "String", "Array", "Void"};
-static char *typeKind[] = {"Program","Procedure", "Parameter", "Variable", "Constant", "LoopVar"};
+static char *typeKind[] = {"Program","Procedure", "Parameter", "Variable", "Constant"};
+static char *argMsg[30];
 int curScopeLevel;
+
+void printLine(int n)
+{
+    if(n == 0) return;
+    while(n--) printf("-");
+    printf("\n");
+}
 
 /*************  for symbolEntry ******************/
 void destroy_Args(struct Args* args)
@@ -140,8 +148,10 @@ void nextScope()
 
 void prevScope()
 {
-    printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     printf("Discard Var:\n");
+    printLine(90);
+    printf("|    %-9s|     %-9s|   %-9s| %-7s|  %-10s|          %-15s|\n", "Name","Type","Kind","level","ItemType","Args");
+    printLine(90);
     int pos;
     curScopeLevel --;
     while(varList->node->level != curScopeLevel)
@@ -151,7 +161,8 @@ void prevScope()
         symbolTable[pos] = destroy_SymbolEntry(varList->node);
         pop_symbol(&varList);
     }
-    printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    printLine(90);
+    printf("Now ");
     PrintSymbolTable();
 }
 int hash(const char *name)
@@ -217,21 +228,70 @@ void destroySymbolTable()
 
 void PrintSymbolEntry(const struct SymTableEntry *cur)
 {
+    int nameLength;
     if(cur == NULL) 
     {
         printf("Some Error occur in PrintSymbolEntry!\n");
         return;
     }
-    printf("Name: %5s,", cur->name);
-    if(cur->type == NULL) printf(" Type: %8s,", "None");
-    else printf(" Type: %8s,", typeName[cur->type->type]);   
-    printf(" Kind: %9s, Level: %2d  |\n", typeKind[cur->kind],cur->level);
+    printf("| %-12s", cur->name);
+
+    //None type
+    if(cur->type == NULL) printf("| %-13s", "None");
+    else printf("| %-13s", typeName[cur->type->type]);
+
+    printf("| %-11s| %-6d ", typeKind[cur->kind],cur->level);
+
+    if(cur->type && cur->type->type == Type_ARRAY)
+    {
+        printf("| %-11s", typeName[cur->type->itemType->type]);
+    }
+    else
+    {
+        printf("| %-11s","");
+    }
+
+    if(cur->args != NULL)
+    {
+        argMsg[0] = '\0';
+        char *start = argMsg;
+        struct Args* tmp = cur->args;
+        printf("|");
+        while (tmp)
+        {
+            if(start != argMsg)
+            {
+                *start = ',';
+                start++;
+            }
+            
+            nameLength = strlen(typeName[tmp->type->type]);
+            strncpy(start, typeName[tmp->type->type], nameLength);
+            //printf("length=%d\n",nameLength);
+            start += nameLength;
+            tmp = tmp->NEXT;
+        }
+        *start = '\0';
+        printf(" %-24s|",argMsg);
+        //printf("|");
+    }
+    else
+    {
+        printf("| %-24s|","");
+    }
+    printf("\n");
 }
+
+
 
 void PrintSymbolTable()
 {
-    printf("--------------------------------------------------------------\n");
-    printf("Print SymbolTable: \n");
+    printf("SymbolTable: \n");
+    printLine(90);
+    
+    printf("|    %-9s|     %-9s|   %-9s| %-7s|  %-10s|          %-15s|\n", "Name","Type","Kind","level","ItemType","Args");
+    printLine(90);
+
 
     struct SymbolStack *top = varList;
     while(top)
@@ -239,17 +299,7 @@ void PrintSymbolTable()
         PrintSymbolEntry(top->node);
         top = top->NEXT;
     }
-    
-    // for(int i = 0, t; i< SYMTABSIZE;i++)
-    // {
-    //     struct SymTableEntry *cur = symbolTable[i];
-    //     while(cur)
-    //     {
-    //         PrintSymbolEntry(cur);
-    //         cur = cur->NEXT;
-    //     }
-    // }
-    printf("--------------------------------------------------------------\n");
+    printLine(90);
 }
 
 // Add new identifer
@@ -271,7 +321,7 @@ void addVar(char *name, enum SymbolKind kind)
     {
         if(symbolTable[pos]->level == newVar->level)
         {
-            semanticError("redeclaration of name %s", newVar->name);
+            semanticError("redeclaration of name %s\n", newVar->name);
         }
         newVar->NEXT = symbolTable[pos];
         symbolTable[pos]->PREV = newVar;

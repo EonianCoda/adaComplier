@@ -4,13 +4,13 @@
 
 extern int linenum;
 int errorCount = 0;
-
+extern bool ErrorInterrupt; 
 char *OpName[] = {
   "NONE",
   "or", "and", "not",
-  "<", "<=", "<>", ">=", ">", "=",
+  "<", "<=", "/=", ">=", ">", "=", "e",
   "+", "-",
-  "*", "/", "mod",
+  "*", "/",
   "UMINUS", // -num
   "FUNC", // f(x)
   "INDEX", // a[i]
@@ -27,7 +27,7 @@ void semanticError(const char *fmt, ...) {
   vprintf(fmt, ap);
   va_end(ap);
   errorCount++;
-  //exit(-1);
+  exit(-1);
 }
 
 /******************************* Other ********************************/
@@ -107,15 +107,6 @@ bool isSameType(struct Type *t1, struct Type *t2)
         if(t1->itemType->type != t2->itemType->type || t1->itemType->size != t2->itemType->size) return false;
     }
     return true;
-}
-
-bool canConvertTypeImplicitly(struct Type *from, struct Type *to) 
-{
-    // I think integer [5] is not real [5]
-    if (isSameType(from, to)) return true;
-    else if (from->type == Type_INT && to->type == Type_REAL) return true;
-    else if (from->type == Type_REAL && to->type == Type_INT) return true;
-    return false;
 }
 
 bool isScalarType(struct Type *type)

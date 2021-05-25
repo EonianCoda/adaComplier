@@ -89,7 +89,7 @@ char stringTmp[MAX_LINE_LENG];
 
 <isString>\"            {
                             LIST;
-                            printf("<String:%s>\n",stringTmp);
+                            if(TOKEN_DEBUG_FLAG) printf("<String:%s>\n",stringTmp);
                             int n = strlen(stringTmp);
                             char *tmp = malloc(n + 1);
                             strncpy(tmp, stringTmp, n);

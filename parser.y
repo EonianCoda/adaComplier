@@ -9,7 +9,6 @@ extern int linenum;
 #define Trace(t)  { if(DEBUG_FLAG){  if(ENABLE_BEFORE_LINENUMBER) {if(linenum >= DEBUG_BEFORE_LINENUMBER) printf(t);} else printf(t);} }
 extern FILE *yyin;
 extern int yylex(void);
-
 struct SymTableEntry *curFunc = NULL;
 %}
 
@@ -55,8 +54,6 @@ struct SymTableEntry *curFunc = NULL;
 %nonassoc '['
 
 
-
-
 %token <name> ID
 
 // literals
@@ -85,6 +82,11 @@ program:        PROGRAM ID
                 }
                 programbody END ID
                 {
+                    if(strcmp($2,$6))
+                    {
+                        semanticError("Program declaration and END should be same name, %s and %s\n", $2, $6);
+                    }
+
                     Trace("Reducing to program\n");
                 }
                 ;
@@ -134,18 +136,6 @@ procedureDeclar:
         paraDeclars
         {
             curFunc->args = $4;
-            // struct Args* test = curFunc->args;
-            // if(test == NULL) printf("No args!");
-            // else
-            // {
-            //     while(test)
-            //     {
-            //         printf("%d, ",test->type->type);
-            //         test = test->NEXT;
-            //     }
-            //     printf("\n");
-            // }
-            
             Trace("End this procedure's parameter declaration!\n");
         }
         procedureReturn
@@ -158,6 +148,10 @@ procedureDeclar:
         }
         block END ID ';'
         {
+            if(strcmp($2,$11))
+            {
+                semanticError("Procedure declaration and END should be same name, %s and %s\n", $2, $11);
+            }
             Trace("End this procedure declaration!\n");
             curFunc = NULL;
         }
@@ -211,9 +205,6 @@ return_stmt:
             destroyExpr($2);
         }
         | RETURN ';'
-        {
-            if(curFunc->type != Type_VOID) semanticError("Procedure %s should have the return value!\n", curFunc->name);
-        }
         ;
 procedure_call: function_invoc ';' 
         { 
@@ -266,12 +257,10 @@ for_stmt:
         FOR '(' variable_reference IN literalConstant '.' '.' literalConstant ')'
         {
             if($5.type != Type_INT || $8.type != Type_INT) semanticError("for loop range should be integer");
-            //forCheck($5.integer, $8.integer); 
             destroyExpr($3);
         }
         LOOP block_or_simple END LOOP ';'
         {
-           // if ($<boolVal>3) removeLoopVar(); 
             Trace("End For Loop\n");
         }
         ;
@@ -317,9 +306,8 @@ print_keyword:
         | PRINTLN
         ;
 /***************************************************/
-/*******************Expression*********************/
+/*******************Expression**********************/
 /***************************************************/
-
 variable_reference:
         ID %prec LOWER_THEN_INDEX
         { 
@@ -333,7 +321,7 @@ variable_reference:
             Trace("Reducing to a array element ref\n");
         }
         ;
-        
+//The most Priority expression  
 prior_expr:
         '(' boolean_expr ')' 
         { 
@@ -344,7 +332,7 @@ prior_expr:
         | function_invoc
         ;
 
-
+//Binary minus or liternal Constant          
 factor:
         prior_expr { Trace("Reducing to factor\n"); }
         | literalConstant
@@ -360,6 +348,7 @@ factor:
         }
         ;
 
+// * or / expression
 term:
         factor { Trace("Reducing to term\n"); }
         | term mul_op factor
@@ -372,6 +361,7 @@ mul_op:
         '*' { Trace("Reducing to mul_op\n"); $$ = Op_MULTIPLY;}
         | '/' { Trace("Reducing to mul_op\n"); $$ = Op_DIVIDE;}
         ;
+// + or - expression
 expression:
         term { Trace("Reducing to expression\n"); }
         | expression add_op term
@@ -385,7 +375,7 @@ add_op:
         '+' { Trace("Reducing to add_op\n"); $$ = Op_PLUS; }
         | '-' { Trace("Reducing to add_op\n"); $$ = Op_MINUS; }
         ;
-
+// relation operation
 relation_expr:
         expression { Trace("Reducing to relation_expr\n"); }
         | relation_expr rel_op expression
@@ -403,6 +393,7 @@ rel_op:
         | NOTEQ { $$ = Op_NOTEQUAL; }
         ;
 
+// not operation
 boolean_factor:
         relation_expr { Trace("Reducing to boolean factor\n"); }
         | NOT boolean_factor
@@ -412,6 +403,7 @@ boolean_factor:
         }
         ;
 
+// AND operation
 boolean_term:
         boolean_factor { Trace("Reducing to boolean_term\n"); }
         | boolean_term AND boolean_factor
@@ -421,6 +413,7 @@ boolean_term:
         }
         ;
 
+// Or operation
 boolean_expr:
         boolean_term { Trace("Reducing to boolean_expr\n"); }
         | boolean_expr OR boolean_term
@@ -445,6 +438,8 @@ declaration:
         ;
 
 
+
+//Variable declaration
 varDeclar:
         varAssignType ';' 
         { 
@@ -452,10 +447,10 @@ varDeclar:
             Trace("Reducing to varDeclar\n");
         }
         | identifier_list  ASSIGN  boolean_expr ';'  
-        { 
+        {
             if($3->type == NULL)
             {
-                semanticError("init error(left-side and right-side have different type)");
+                semanticError("init error(left-side and right-side have different type)\n");
                 assign_type_byEnum(Type_VOID, false);
             }
             else
@@ -467,9 +462,10 @@ varDeclar:
         }
         | varAssignType ASSIGN boolean_expr ';' 
         {
+            
             if($3->type == NULL || $1->type != $3->type->type)
             {
-                semanticError("init error(left-side and right-side have different type)");
+                semanticError("init error(left-side and right-side have different type)\n");
             }
             destroy_type($1);
             destroyExpr($3);
@@ -486,12 +482,13 @@ varAssignType:
         }
         ;
 
+//Constant variable declaration
 constVarDeclar:
         identifier_list  ':' CONSTANT ASSIGN boolean_expr ';' 
         { 
             if($5->type == NULL)
             {
-                semanticError("LSH is VOID type");
+                semanticError("LSH is VOID type\n");
                 assign_type_byEnum(Type_VOID, true);
             }
             assign_type($5->type, true);
@@ -501,7 +498,7 @@ constVarDeclar:
             assign_type($5, true);
             if($7->type == NULL || $5->type != $7->type->type)
             {
-                semanticError("init error(left-side and right-side have different type)");
+                semanticError("init error(left-side and right-side have different type)\n");
             }
             destroy_type($5);
             destroyExpr($7);
@@ -588,6 +585,7 @@ int main(int argc, char *argv[])
     }
 
     yyin = fopen(argv[1], "r");         /* open input file */
+
     if(yyin)
     {
         printf("open file success!\n");

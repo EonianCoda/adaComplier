@@ -9,7 +9,7 @@
 * util.h / .c ：關於一些資料結構與其函式
 * parser.y：yacc file，進行句法檢查
 * tokens.l：lex file，tokenize 輸入檔案
-* 
+* proj2.pdf：關於simple ada language的規則敘述
 * test director：存放一些測試用的檔案(.ada)
 
 ## Execute

@@ -40,5 +40,5 @@ begin
   println n;
   print "Result of iterative computation:";
   print apple(1.0+9.0,2.0);
-end
+end;
 end computeFib

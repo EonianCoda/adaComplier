@@ -60,5 +60,5 @@ program test
         end;
       end loop;
 
-    end
+    end;
 end test

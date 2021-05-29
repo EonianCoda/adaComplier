@@ -23,5 +23,5 @@ program test
         y : integer[10];
         w : string;
     begin
-    end
+    end;
 end test

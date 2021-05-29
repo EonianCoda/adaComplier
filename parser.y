@@ -80,11 +80,11 @@ program:        PROGRAM ID
                     addVar($2, SymbolKind_program);
                     nextScope();
                 }
-                programbody END ID
+                programbody END ',' ID
                 {
-                    if(strcmp($2,$6))
+                    if(strcmp($2,$7))
                     {
-                        semanticError("Program declaration and END should be same name, %s and %s\n", $2, $6);
+                        semanticError("Program declaration and END should be same name, %s and %s\n", $2, $7);
                     }
 
                     Trace("Reducing to program\n");

@@ -26,5 +26,5 @@ program test
     c(3.0);
     global_int := (b(b()) + 9)*10;
     global_float := (c(2.0) + 6.0);
-  end
+  end;
 end test
